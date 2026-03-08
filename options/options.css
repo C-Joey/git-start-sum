@@ -1,0 +1,191 @@
+/* ===== Options Page Styles ===== */
+
+body {
+    min-height: 100vh;
+    background: var(--bg-primary);
+    display: flex;
+    justify-content: center;
+    padding: var(--space-3xl);
+}
+
+.options-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.options-header {
+    margin-bottom: var(--space-2xl);
+}
+
+.options-header h1 {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.options-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+/* ===== Sections ===== */
+.section {
+    padding: var(--space-xl);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-secondary);
+}
+
+/* ===== Form ===== */
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.form-hint {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    margin-top: var(--space-xs);
+}
+
+.form-hint code {
+    background: var(--bg-tertiary);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 10px;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) 0;
+}
+
+.input-sm {
+    width: 80px;
+    text-align: center;
+}
+
+/* ===== Input with check button ===== */
+.input-with-action {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: stretch;
+}
+
+.input-with-action .input {
+    flex: 1;
+}
+
+.input-with-action .btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* ===== Toggle Switch (Chrome-style) ===== */
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-base);
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    left: 2px;
+    bottom: 2px;
+    background: var(--text-tertiary);
+    border-radius: 50%;
+    transition: all var(--transition-base);
+}
+
+.toggle input:checked+.toggle-slider {
+    background: var(--chrome-blue);
+    border-color: var(--chrome-blue);
+}
+
+.toggle input:checked+.toggle-slider::before {
+    transform: translateX(16px);
+    background: #fff;
+}
+
+/* ===== Status Badge ===== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-sm);
+}
+
+.status-badge.success {
+    background: var(--tag-green);
+    color: var(--color-success);
+    border: 1px solid transparent;
+}
+
+.status-badge.error {
+    background: var(--tag-red);
+    color: var(--color-danger);
+    border: 1px solid transparent;
+}
+
+.status-badge.loading {
+    color: var(--text-secondary);
+}
+
+/* ===== Export Buttons ===== */
+.export-buttons {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+/* ===== Footer ===== */
+.options-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--border-primary);
+}

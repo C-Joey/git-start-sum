@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Stars Manager — 设置</title>
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+    <div class="options-container">
+        <header class="options-header">
+            <h1>⭐ GitHub Stars Manager</h1>
+            <p class="text-secondary">配置你的扩展设置</p>
+        </header>
+
+        <main class="options-main">
+            <!-- GitHub Token -->
+            <section class="section card">
+                <h2 class="section-title">
+                    <span>🔑</span> GitHub 认证
+                </h2>
+                <div class="form-group">
+                    <label class="form-label">Personal Access Token</label>
+                    <div class="input-with-action">
+                        <input type="password" id="github-token" class="input" placeholder="ghp_xxxxxxxxxxxx">
+                        <button id="btn-check-token" class="btn">🔍 验证</button>
+                    </div>
+                    <p class="form-hint">需要 <code>repo</code> + <code>gist</code> 权限。<a
+                            href="https://github.com/settings/tokens/new?description=GitHub+Stars+Manager&scopes=repo,gist"
+                            target="_blank">创建 Token →</a></p>
+                </div>
+                <div id="token-status" class="status-badge hidden"></div>
+            </section>
+
+            <!-- Sync Settings -->
+            <section class="section card">
+                <h2 class="section-title">
+                    <span>🔄</span> 数据同步
+                </h2>
+                <div class="form-group">
+                    <label class="form-label">同步仓库名</label>
+                    <div class="input-with-action">
+                        <input type="text" id="sync-repo" class="input" placeholder="my-github-stars" readonly>
+                        <button id="btn-edit-repo" class="btn btn-sm">✏️ 修改</button>
+                    </div>
+                    <p class="form-hint" id="sync-repo-hint">将自动创建为私有仓库</p>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">启用自动同步</label>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="sync-enabled">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">同步间隔（分钟）</label>
+                    </div>
+                    <input type="number" id="sync-interval" class="input input-sm" min="5" max="1440" value="30">
+                </div>
+            </section>
+
+            <!-- AI Settings -->
+            <section class="section card">
+                <h2 class="section-title">
+                    <span>🤖</span> AI 总结
+                </h2>
+                <div class="form-group">
+                    <label class="form-label">AI 服务商</label>
+                    <select id="ai-provider" class="input">
+                        <option value="gemini">Google Gemini（免费）</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="custom">自定义 (OpenAI 兼容)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">API Key</label>
+                    <div class="input-with-action">
+                        <input type="password" id="ai-key" class="input" placeholder="输入你的 API Key">
+                        <button id="btn-check-ai" class="btn">🔍 验证</button>
+                    </div>
+                    <p class="form-hint" id="ai-hint">Gemini Key: <a href="https://aistudio.google.com/apikey"
+                            target="_blank">获取免费 Key →</a></p>
+                </div>
+                <div id="ai-status" class="status-badge hidden"></div>
+                <div id="custom-ai-fields" class="hidden">
+                    <div class="form-group" style="margin-top:12px;">
+                        <label class="form-label">自定义 API 端点</label>
+                        <input type="text" id="ai-endpoint" class="input"
+                            placeholder="https://api.example.com/v1/chat/completions">
+                        <p class="form-hint">输入基地址（如 <code>https://api.example.com</code>）会自动补全为
+                            <code>/v1/chat/completions</code>
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">模型名称</label>
+                        <select id="ai-model-select" class="input" style="display:none;">
+                            <option value="">-- 请先验证 API Key 以加载模型列表 --</option>
+                        </select>
+                        <div class="input-with-action" id="ai-model-manual-row">
+                            <input type="text" id="ai-model" class="input" placeholder="手动输入模型名 (如 gpt-4o) 或先验证加载列表">
+                            <button id="btn-load-models" class="btn btn-sm" title="加载模型列表">📋 加载</button>
+                        </div>
+                        <p class="form-hint" id="model-hint">点击验证按钮后会自动加载可用模型</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Settings -->
+            <section class="section card">
+                <h2 class="section-title">
+                    <span>📅</span> 浏览历史
+                </h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">自动记录 GitHub 浏览历史</label>
+                        <p class="form-hint">记录你访问的 GitHub 仓库页面</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="record-history" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <button id="btn-clear-history" class="btn btn-danger btn-sm" style="margin-top:8px;">清除浏览历史</button>
+            </section>
+
+            <!-- Export -->
+            <section class="section card">
+                <h2 class="section-title">
+                    <span>📤</span> 导出数据
+                </h2>
+                <div class="export-buttons">
+                    <button id="btn-export-md" class="btn">📄 导出 Markdown</button>
+                    <button id="btn-export-json" class="btn">💾 导出 JSON</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="options-footer">
+            <button id="btn-save" class="btn btn-primary" style="padding:8px 28px;">保存设置</button>
+            <span id="save-status" class="text-sm text-secondary"></span>
+        </footer>
+    </div>
+
+    <script src="options.js" type="module"></script>
+</body>
+
+</html>
