@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function loadSettingsToForm(settings) {
     $('#github-token').value = settings.githubToken || '';
+    $('#github-api-base').value = settings.githubApiBase || '';
     $('#sync-repo').value = settings.syncRepoName || 'my-github-stars';
     $('#sync-enabled').checked = settings.syncEnabled !== false;
     $('#sync-interval').value = settings.syncInterval || 30;
@@ -392,6 +393,7 @@ async function handleSave() {
 
     const settings = {
         githubToken: $('#github-token').value.trim(),
+        githubApiBase: $('#github-api-base').value.trim(),
         syncRepoName: newRepoName,
         syncEnabled: $('#sync-enabled').checked,
         syncInterval: parseInt($('#sync-interval').value) || 30,
