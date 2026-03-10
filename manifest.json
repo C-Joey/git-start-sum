@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "GitHub Stars Manager",
+  "name": "__MSG_appName__",
   "version": "1.0.0",
-  "description": "管理你的 GitHub Star 项目：标签分类、备注/AI总结、浏览历史、数据同步",
+  "description": "__MSG_appDesc__",
+  "default_locale": "zh_CN",
   "permissions": [
     "storage",
     "tabs",
@@ -34,9 +35,15 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://github.com/*"],
-      "css": ["content/content.css"],
-      "js": ["content/content.js"],
+      "matches": [
+        "https://github.com/*"
+      ],
+      "css": [
+        "content/content.css"
+      ],
+      "js": [
+        "content/content.js"
+      ],
       "run_at": "document_idle"
     }
   ],

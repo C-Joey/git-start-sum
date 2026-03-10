@@ -84,7 +84,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'GENERATE_SUMMARY') {
         // Wrap in a promise with timeout to ensure sendResponse is always called
         const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('AI 总结超时（30秒），请检查网络或 API 设置')), 30000)
+            setTimeout(() => reject(new Error(chrome.i18n.getMessage('bgAITimeout'))), 30000)
         );
 
         const workPromise = (async () => {
@@ -96,7 +96,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         Promise.race([workPromise, timeoutPromise])
             .then(result => sendResponse(result))
-            .catch(err => sendResponse({ error: err.message || '生成失败' }));
+            .catch(err => sendResponse({ error: err.message || chrome.i18n.getMessage('contentAIGenerateFailGeneric') }));
 
         return true;
     }

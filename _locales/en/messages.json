@@ -1,0 +1,674 @@
+{
+    "appName": {
+        "message": "GitHub Stars Manager"
+    },
+    "appDesc": {
+        "message": "Manage your GitHub Star projects: tags, notes/AI summary, history, and data sync"
+    },
+    "popupTitleStarsManager": {
+        "message": "Stars Manager"
+    },
+    "popupBtnSync": {
+        "message": "Sync Data"
+    },
+    "popupBtnSettings": {
+        "message": "Settings"
+    },
+    "popupSetupTitle": {
+        "message": "Welcome to Stars Manager"
+    },
+    "popupSetupDesc": {
+        "message": "Configure your GitHub Token first to start managing"
+    },
+    "popupSetupTokenPlaceholder": {
+        "message": "Paste your GitHub Personal Access Token"
+    },
+    "popupSetupSubmit": {
+        "message": "Get Started"
+    },
+    "popupSetupHelpPrefix": {
+        "message": "Requires repo + gist permissions · "
+    },
+    "popupSetupHelpLink": {
+        "message": "Create Token →"
+    },
+    "popupTabStars": {
+        "message": "Stars"
+    },
+    "popupTabHistory": {
+        "message": "History"
+    },
+    "popupTabTags": {
+        "message": "Tags"
+    },
+    "popupSearchPlaceholder": {
+        "message": "Search by repository name, description, notes..."
+    },
+    "popupLoadingText": {
+        "message": "Loading Stars..."
+    },
+    "popupEmptyHistory": {
+        "message": "No browsing history"
+    },
+    "popupEmptyHistoryDesc": {
+        "message": "Automatically recorded when visiting GitHub repository pages"
+    },
+    "popupNewTagPlaceholder": {
+        "message": "Enter new tag name..."
+    },
+    "popupBtnAddTag": {
+        "message": "Add"
+    },
+    "popupModalLabelTags": {
+        "message": "🏷️ Tags"
+    },
+    "popupModalTagPlaceholder": {
+        "message": "Add a tag..."
+    },
+    "popupModalBtnAddTag": {
+        "message": "+ Add"
+    },
+    "popupModalLabelNote": {
+        "message": "📝 Note"
+    },
+    "popupModalNotePlaceholder": {
+        "message": "Write your note for this project..."
+    },
+    "popupModalLabelAI": {
+        "message": "🤖 AI Summary"
+    },
+    "popupModalAIPrompt": {
+        "message": "Click to generate AI summary"
+    },
+    "popupModalAIBtn": {
+        "message": "✨ Generate AI Summary"
+    },
+    "popupModalBtnSave": {
+        "message": "Save"
+    },
+    "popupStatusReady": {
+        "message": "Ready"
+    },
+    "msgLoadingCache": {
+        "message": "Loading local cache..."
+    },
+    "msgLoadedCache": {
+        "message": "Cache loaded ($COUNT$ Stars) · Syncing latest data...",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgStarsStats": {
+        "message": "Total $STARS$ Star projects · $TAGS$ tags",
+        "placeholders": {
+            "stars": {
+                "content": "$1"
+            },
+            "tags": {
+                "content": "$2"
+            }
+        }
+    },
+    "msgFirstLoad": {
+        "message": "First load: Fetched $COUNT$ Stars...",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgSyncDone": {
+        "message": "Latest data synced · Total $COUNT$ Stars",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgError": {
+        "message": "Error: $MSG$",
+        "placeholders": {
+            "msg": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgNoSearchMatch": {
+        "message": "No matching projects found"
+    },
+    "msgNoStars": {
+        "message": "No Star projects yet"
+    },
+    "msgFilterAll": {
+        "message": "All"
+    },
+    "msgNoTags": {
+        "message": "No tags yet, add here or in project notes"
+    },
+    "msgConfirmDeleteTag": {
+        "message": "Are you sure to delete tag '$TAG$'? It will also be removed from all projects.",
+        "placeholders": {
+            "tag": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgEmptyTags": {
+        "message": "No tags"
+    },
+    "msgSaved": {
+        "message": "Saved"
+    },
+    "msgAIConfigWarning": {
+        "message": "⚠️ Please configure AI API Key in "
+    },
+    "msgSettingsInMessage": {
+        "message": "Settings"
+    },
+    "msgAIGenerating": {
+        "message": "⏳ Generating..."
+    },
+    "msgSyncing": {
+        "message": "Syncing..."
+    },
+    "msgSyncComplete": {
+        "message": "Sync Complete"
+    },
+    "msgLastSync": {
+        "message": "Last sync: $TIME$",
+        "placeholders": {
+            "time": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgEditNoteTags": {
+        "message": "Edit Note/Tags"
+    },
+    "msgArchived": {
+        "message": "archived"
+    },
+    "popupBtnDeleteTag": {
+        "message": "Delete tag"
+    },
+    "popupModalAIPromptFull": {
+        "message": "Click the button below to generate AI summary"
+    },
+    "optionsTitle": {
+        "message": "GitHub Stars Manager — Settings"
+    },
+    "optionsHeaderDesc": {
+        "message": "Configure your extension settings"
+    },
+    "optionsSectionAuth": {
+        "message": "🔑 GitHub Authentication"
+    },
+    "optionsTokenLabel": {
+        "message": "Personal Access Token"
+    },
+    "optionsTokenPlaceholder": {
+        "message": "ghp_xxxxxxxxxxxx"
+    },
+    "optionsBtnCheck": {
+        "message": "🔍 Verify"
+    },
+    "optionsTokenHintContent": {
+        "message": "Requires repo + gist permissions."
+    },
+    "optionsTokenHintLink": {
+        "message": "Create Token →"
+    },
+    "optionsApiProxyLabel": {
+        "message": "API Proxy (Optional)"
+    },
+    "optionsApiProxyPlaceholder": {
+        "message": "e.g., https://api.github.com"
+    },
+    "optionsApiProxyHint": {
+        "message": "If access is blocked, use a proxy. Defaults to https://api.github.com"
+    },
+    "optionsSectionSync": {
+        "message": "🔄 Data Sync"
+    },
+    "optionsSyncRepoLabel": {
+        "message": "Sync Repo Name"
+    },
+    "optionsSyncRepoPlaceholder": {
+        "message": "my-github-stars"
+    },
+    "optionsBtnEdit": {
+        "message": "Edit"
+    },
+    "optionsSyncRepoHint": {
+        "message": "Will be automatically created as a private repository"
+    },
+    "optionsSyncAutoLabel": {
+        "message": "Enable Auto-Sync"
+    },
+    "optionsSyncIntervalLabel": {
+        "message": "Sync Interval (minutes)"
+    },
+    "optionsSectionAI": {
+        "message": "🤖 AI Summary"
+    },
+    "optionsAIProviderLabel": {
+        "message": "AI Provider"
+    },
+    "optionsAIGemini": {
+        "message": "Google Gemini (Free)"
+    },
+    "optionsAIOpenAI": {
+        "message": "OpenAI"
+    },
+    "optionsAICustom": {
+        "message": "Custom (OpenAI Compatible)"
+    },
+    "optionsAIKeyLabel": {
+        "message": "API Key"
+    },
+    "optionsAIKeyPlaceholder": {
+        "message": "Enter your API Key"
+    },
+    "optionsAIGeminiHint": {
+        "message": "Gemini Key: "
+    },
+    "optionsAIGeminiHintLink": {
+        "message": "Get Free Key →"
+    },
+    "optionsAICustomEndpointLabel": {
+        "message": "Custom API Endpoint"
+    },
+    "optionsAICustomEndpointPlaceholder": {
+        "message": "https://api.example.com/v1/chat/completions"
+    },
+    "optionsAICustomEndpointHint": {
+        "message": "Entering a base URL (e.g. https://api.example.com) will auto-complete to /v1/chat/completions"
+    },
+    "optionsAIModelLabel": {
+        "message": "Model Name"
+    },
+    "optionsAIModelOptionDefault": {
+        "message": "-- Verify API Key first to load models --"
+    },
+    "optionsAIModelInputPlaceholder": {
+        "message": "Manually enter model name (e.g. gpt-4o) or verify to load list"
+    },
+    "optionsBtnLoadModels": {
+        "message": "📋 Load"
+    },
+    "optionsAIModelHint": {
+        "message": "Click verify button to auto-load available models"
+    },
+    "optionsSectionHistory": {
+        "message": "📅 Browsing History"
+    },
+    "optionsRecordHistoryLabel": {
+        "message": "Auto-record GitHub browsing history"
+    },
+    "optionsRecordHistoryHint": {
+        "message": "Records your visited GitHub repository pages"
+    },
+    "optionsBtnClearHistory": {
+        "message": "Clear Browsing History"
+    },
+    "optionsSectionExport": {
+        "message": "📤 Export Data"
+    },
+    "optionsBtnExportMd": {
+        "message": "📄 Export Markdown"
+    },
+    "optionsBtnExportJson": {
+        "message": "💾 Export JSON"
+    },
+    "optionsBtnSave": {
+        "message": "Save Settings"
+    },
+    "optionsRepoLocked": {
+        "message": "Repository name is locked, click edit to unlock"
+    },
+    "optionsConfirmEditRepo": {
+        "message": "Editing the repository name may break the connection with the existing synced repository. Are you sure you want to edit?"
+    },
+    "optionsBtnUnlocked": {
+        "message": "Unlocked"
+    },
+    "optionsHintSaveRepo": {
+        "message": "Please save after editing"
+    },
+    "optionsConfirmClearHistory": {
+        "message": "Are you sure you want to clear all browsing history? This action cannot be undone."
+    },
+    "optionsHistoryCleared": {
+        "message": "Browsing history cleared"
+    },
+    "optionsAIOpenAIHint": {
+        "message": "OpenAI Key: "
+    },
+    "optionsAIOpenAIHintLink": {
+        "message": "Get Key →"
+    },
+    "optionsHintCustomKey": {
+        "message": "Enter your custom AI API Key"
+    },
+    "optionsErrorNoToken": {
+        "message": "Please enter a Token"
+    },
+    "optionsValidating": {
+        "message": "Validating..."
+    },
+    "optionsValidatingDot": {
+        "message": "Validating..."
+    },
+    "optionsConnected": {
+        "message": "Connected: $1 ($2 public repositories)",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            },
+            "2": {
+                "content": "$2"
+            }
+        }
+    },
+    "optionsValidateFailed": {
+        "message": "Validation failed: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsErrorNoAPIKey": {
+        "message": "Please enter an API Key"
+    },
+    "optionsGeminiKeyValid": {
+        "message": "Gemini API Key is valid"
+    },
+    "optionsProviderCustom": {
+        "message": "Custom"
+    },
+    "optionsAPIKeyValidProvider": {
+        "message": "API Key is valid ($1)",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsLoadingModels": {
+        "message": "Loading model list..."
+    },
+    "optionsErrorParseAPI": {
+        "message": "Cannot parse API URL, please enter model name manually"
+    },
+    "optionsErrorLoadFail": {
+        "message": "Load failed (HTTP $1), please enter model name manually",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsErrorNoModelFound": {
+        "message": "No available models found, please enter model name manually"
+    },
+    "optionsManualInput": {
+        "message": "Manual input..."
+    },
+    "optionsLoadedModels": {
+        "message": "Loaded $1 available models",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsErrorLoadModelMessage": {
+        "message": "Failed to load models: $1, please enter manually",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsConfirmChangeRepo": {
+        "message": "Changing repository name from '$1' to '$2' will disconnect from the old repository. Are you sure?",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            },
+            "2": {
+                "content": "$2"
+            }
+        }
+    },
+    "optionsSavedSettings": {
+        "message": "Settings saved"
+    },
+    "optionsExportedMarkdown": {
+        "message": "Markdown exported"
+    },
+    "optionsExportFailed": {
+        "message": "Export failed: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsExportedJSON": {
+        "message": "JSON exported"
+    },
+    "timeAgoYears": {
+        "message": "$1 years ago",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoMonths": {
+        "message": "$1 months ago",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoDays": {
+        "message": "$1 days ago",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoHours": {
+        "message": "$1 hours ago",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoMinutes": {
+        "message": "$1 minutes ago",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoJustNow": {
+        "message": "Just now"
+    },
+    "aiSummaryPrompt": {
+        "message": "You are a technical project summarization assistant. Please return a JSON data object.\nIt needs to include two fields:\n1. \"summary\": Briefly summarize the purpose and features of the GitHub project in English (1-2 sentences, max 80 words).\n2. \"tags\": Based on the project features, select 1-3 most appropriate tags from the [Available tags]. If none fit well, create the most suitable tag words yourself.\n\nAvailable tags: $1\n\nProject Name: $2\nProject Description: $3\nFirst 500 words of README: \n$4\n\nPlease only return a valid JSON object without any additional explanation text. Example:\n{\n  \"summary\": \"This is a tool for...\",\n  \"tags\": [\"Frontend\", \"React\"]\n}",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            },
+            "2": {
+                "content": "$2"
+            },
+            "3": {
+                "content": "$3"
+            },
+            "4": {
+                "content": "$4"
+            }
+        }
+    },
+    "aiSummaryNoTags": {
+        "message": "None"
+    },
+    "aiSummaryNoDesc": {
+        "message": "No description"
+    },
+    "aiSummaryNoReadme": {
+        "message": "No README"
+    },
+    "aiSummaryFail": {
+        "message": "Summary generation failed"
+    },
+    "aiSummaryFormatError": {
+        "message": "AI returned incorrectly formatted data (not JSON):\n$1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "aiSummaryNoAIConfig": {
+        "message": "AI service not configured"
+    },
+    "aiSummaryGeminiNoKey": {
+        "message": "Please configure Gemini API Key in settings"
+    },
+    "aiSummaryTimeout": {
+        "message": "Request timed out (30s), please check network or API Key"
+    },
+    "aiSummaryTimeoutCustom": {
+        "message": "Request timed out (30s), please check network or Custom API endpoint"
+    },
+    "aiSummaryGeminiError": {
+        "message": "Gemini API Error: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "aiSummaryGeneralAPIError": {
+        "message": "AI API Error: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "aiSummaryNoAIAPIKey": {
+        "message": "Please configure AI API Key in settings"
+    },
+    "githubApiNoToken": {
+        "message": "Please configure GitHub Token first"
+    },
+    "githubApiRateLimit": {
+        "message": "GitHub API rate limit exceeded, resets at $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "githubApiError": {
+        "message": "GitHub API Error: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "githubApiSyncRepoDesc": {
+        "message": "⭐ My GitHub Stars — managed by GitHub Stars Manager"
+    },
+    "syncCommitData": {
+        "message": "📦 Sync stars data — $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncCommitReadme": {
+        "message": "📝 Update stars README — $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncCommitHistory": {
+        "message": "📅 Update browsing history — $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncReadmeTitle": {
+        "message": "# ⭐ My GitHub Stars\n\n> Auto-generated by [GitHub Stars Manager](https://github.com) | Total $1 projects\n\n---\n\n",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncReadmeUntagged": {
+        "message": "## 📂 Untagged\n\n"
+    },
+    "syncReadmeLastUpdate": {
+        "message": "\n---\n\n*Last updated: $1*\n",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncReadmeNote": {
+        "message": "📝 **Note**"
+    },
+    "syncReadmeAISummary": {
+        "message": "🤖 **AI Summary**"
+    },
+    "syncHistoryTitle": {
+        "message": "# 📅 GitHub Browsing History\n\n> Private | Total $1 records\n\n---\n\n",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncShareTitle": {
+        "message": "# ⭐ $1\n\n> Selected from my GitHub Stars | Total $2 projects\n\n---\n\n",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            },
+            "2": {
+                "content": "$2"
+            }
+        }
+    },
+    "syncShareFooter": {
+        "message": "\n---\n\n*Generated by GitHub Stars Manager*\n"
+    },
+    "bgAITimeout": {
+        "message": "AI summary request timed out"
+    },
+    "contentAIGenerateFailGeneric": {
+        "message": "Summary generation failed, please try again"
+    }
+}

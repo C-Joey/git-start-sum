@@ -8,11 +8,25 @@ const $ = (sel) => document.querySelector(sel);
 
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', async () => {
+    localizeHtmlPage();
     const settings = await getSettings();
     originalRepoName = settings.syncRepoName || '';
     loadSettingsToForm(settings);
     bindEvents();
 });
+
+// ===== Localization =====
+function localizeHtmlPage() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = chrome.i18n.getMessage(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        el.title = chrome.i18n.getMessage(el.getAttribute('data-i18n-title'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = chrome.i18n.getMessage(el.getAttribute('data-i18n-placeholder'));
+    });
+}
 
 function loadSettingsToForm(settings) {
     $('#github-token').value = settings.githubToken || '';
@@ -35,13 +49,13 @@ function loadSettingsToForm(settings) {
     if (settings.syncRepoName) {
         repoInput.readOnly = true;
         repoInput.style.opacity = '0.7';
-        editBtn.textContent = '\u270f\ufe0f \u4fee\u6539';
-        hint.textContent = '\ud83d\udd12 \u4ed3\u5e93\u540d\u5df2\u9501\u5b9a\uff0c\u70b9\u51fb\u4fee\u6539\u6309\u94ae\u89e3\u9501';
+        editBtn.textContent = '✏️ ' + chrome.i18n.getMessage('optionsBtnEdit');
+        hint.textContent = '🔒 ' + chrome.i18n.getMessage('optionsRepoLocked');
     } else {
         repoInput.readOnly = false;
         repoInput.style.opacity = '1';
         editBtn.style.display = 'none';
-        hint.textContent = '\u5c06\u81ea\u52a8\u521b\u5efa\u4e3a\u79c1\u6709\u4ed3\u5e93';
+        hint.textContent = chrome.i18n.getMessage('optionsSyncRepoHint');
     }
 }
 
@@ -65,12 +79,12 @@ function bindEvents() {
     $('#btn-edit-repo').addEventListener('click', () => {
         const repoInput = $('#sync-repo');
         if (repoInput.readOnly) {
-            if (confirm('\u4fee\u6539\u4ed3\u5e93\u540d\u53ef\u80fd\u5bfc\u81f4\u4e0e\u5df2\u6709\u540c\u6b65\u4ed3\u5e93\u65ad\u5f00\u8fde\u63a5\u3002\u786e\u5b9a\u8981\u4fee\u6539\u5417\uff1f')) {
+            if (confirm(chrome.i18n.getMessage('optionsConfirmEditRepo'))) {
                 repoInput.readOnly = false;
                 repoInput.style.opacity = '1';
                 repoInput.focus();
-                $('#btn-edit-repo').textContent = '\ud83d\udd13 \u5df2\u89e3\u9501';
-                $('#sync-repo-hint').textContent = '\u26a0\ufe0f \u4fee\u6539\u540e\u8bf7\u70b9\u51fb\u4fdd\u5b58';
+                $('#btn-edit-repo').textContent = '🔓 ' + chrome.i18n.getMessage('optionsBtnUnlocked');
+                $('#sync-repo-hint').textContent = '⚠️ ' + chrome.i18n.getMessage('optionsHintSaveRepo');
             }
         }
     });
@@ -101,9 +115,9 @@ function bindEvents() {
 
     // Clear history
     $('#btn-clear-history').addEventListener('click', async () => {
-        if (confirm('确定清除所有浏览历史？此操作不可恢复。')) {
+        if (confirm(chrome.i18n.getMessage('optionsConfirmClearHistory'))) {
             await clearHistory();
-            showSaveStatus('浏览历史已清除');
+            showSaveStatus(chrome.i18n.getMessage('optionsHistoryCleared'));
         }
     });
 }
@@ -119,11 +133,11 @@ function updateAIFields(provider) {
     }
 
     if (provider === 'gemini') {
-        hint.innerHTML = 'Gemini Key: <a href="https://aistudio.google.com/apikey" target="_blank">获取免费 Key →</a>';
+        hint.innerHTML = `<span data-i18n="optionsAIGeminiHint">${chrome.i18n.getMessage('optionsAIGeminiHint')}</span><a href="https://aistudio.google.com/apikey" target="_blank" data-i18n="optionsAIGeminiHintLink">${chrome.i18n.getMessage('optionsAIGeminiHintLink')}</a>`;
     } else if (provider === 'openai') {
-        hint.innerHTML = 'OpenAI Key: <a href="https://platform.openai.com/api-keys" target="_blank">获取 Key →</a>';
+        hint.innerHTML = `<span data-i18n="optionsAIOpenAIHint">${chrome.i18n.getMessage('optionsAIOpenAIHint')}</span><a href="https://platform.openai.com/api-keys" target="_blank" data-i18n="optionsAIOpenAIHintLink">${chrome.i18n.getMessage('optionsAIOpenAIHintLink')}</a>`;
     } else {
-        hint.textContent = '输入你的自定义 AI API Key';
+        hint.textContent = chrome.i18n.getMessage('optionsHintCustomKey');
     }
 }
 
@@ -166,25 +180,25 @@ async function validateToken() {
     const btn = $('#btn-check-token');
 
     if (!token) {
-        showBadge(statusEl, 'error', '请输入 Token');
+        showBadge(statusEl, 'error', chrome.i18n.getMessage('optionsErrorNoToken'));
         return;
     }
 
     btn.disabled = true;
-    btn.textContent = '⏳ 验证中...';
-    showBadge(statusEl, 'loading', '正在验证...');
+    btn.textContent = '⏳ ' + chrome.i18n.getMessage('optionsValidating');
+    showBadge(statusEl, 'loading', chrome.i18n.getMessage('optionsValidatingDot'));
 
     try {
         // Temporarily save to validate
         await saveSettings({ githubToken: token });
         const user = await getCurrentUser();
-        showBadge(statusEl, 'success', `✓ 已连接: ${user.login} (${user.public_repos} 个公开仓库)`);
+        showBadge(statusEl, 'success', `✓ ${chrome.i18n.getMessage('optionsConnected', [user.login, user.public_repos.toString()])}`);
     } catch (err) {
-        showBadge(statusEl, 'error', `✕ 验证失败: ${err.message}`);
+        showBadge(statusEl, 'error', `✕ ${chrome.i18n.getMessage('optionsValidateFailed', [err.message])}`);
     }
 
     btn.disabled = false;
-    btn.textContent = '🔍 验证';
+    btn.textContent = '🔍 ' + chrome.i18n.getMessage('optionsBtnCheck');
 }
 
 /**
@@ -197,13 +211,13 @@ async function validateAI() {
     const btn = $('#btn-check-ai');
 
     if (!key) {
-        showBadge(statusEl, 'error', '请输入 API Key');
+        showBadge(statusEl, 'error', chrome.i18n.getMessage('optionsErrorNoAPIKey'));
         return;
     }
 
     btn.disabled = true;
-    btn.textContent = '⏳ 验证中...';
-    showBadge(statusEl, 'loading', '正在验证...');
+    btn.textContent = '⏳ ' + chrome.i18n.getMessage('optionsValidating');
+    showBadge(statusEl, 'loading', chrome.i18n.getMessage('optionsValidatingDot'));
 
     try {
         if (provider === 'gemini') {
@@ -223,7 +237,7 @@ async function validateAI() {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error?.message || `HTTP ${res.status}`);
             }
-            showBadge(statusEl, 'success', '✓ Gemini API Key 有效');
+            showBadge(statusEl, 'success', '✓ ' + chrome.i18n.getMessage('optionsGeminiKeyValid'));
         } else {
             // Test OpenAI-compatible API
             // Auto-complete endpoint FIRST, then read the value
@@ -254,17 +268,17 @@ async function validateAI() {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error?.message || `HTTP ${res.status}`);
             }
-            showBadge(statusEl, 'success', `✓ API Key 有效 (${provider === 'custom' ? '自定义' : 'OpenAI'})`);
+            showBadge(statusEl, 'success', `✓ ${chrome.i18n.getMessage('optionsAPIKeyValidProvider', [provider === 'custom' ? chrome.i18n.getMessage('optionsProviderCustom') : 'OpenAI'])}`);
 
             // Try to fetch available models to populate the dropdown
             fetchAvailableModels(endpoint, key);
         }
     } catch (err) {
-        showBadge(statusEl, 'error', `✕ 验证失败: ${err.message}`);
+        showBadge(statusEl, 'error', `✕ ${chrome.i18n.getMessage('optionsValidateFailed', [err.message])}`);
     }
 
     btn.disabled = false;
-    btn.textContent = '🔍 验证';
+    btn.textContent = '🔍 ' + chrome.i18n.getMessage('optionsBtnCheck');
 }
 
 /**
@@ -274,7 +288,7 @@ async function loadModelsManually() {
     const key = $('#ai-key').value.trim();
     const provider = $('#ai-provider').value;
     if (!key) {
-        showSaveStatus('请先输入 API Key');
+        showSaveStatus(chrome.i18n.getMessage('optionsErrorNoAPIKey'));
         return;
     }
     autoCompleteEndpoint();
@@ -292,7 +306,7 @@ async function fetchAvailableModels(chatEndpoint, key) {
     const manualRow = $('#ai-model-manual-row');
     const hint = $('#model-hint');
 
-    hint.textContent = '✅ 正在加载模型列表...';
+    hint.textContent = '✅ ' + chrome.i18n.getMessage('optionsLoadingModels');
 
     try {
         let modelsEndpoint = chatEndpoint.replace(/\/chat\/completions\/?$/, '/models');
@@ -301,7 +315,7 @@ async function fetchAvailableModels(chatEndpoint, key) {
                 const url = new URL(chatEndpoint);
                 modelsEndpoint = `${url.origin}/v1/models`;
             } catch {
-                hint.textContent = '无法解析 API 地址，请手动输入模型名';
+                hint.textContent = chrome.i18n.getMessage('optionsErrorParseAPI');
                 return;
             }
         }
@@ -311,14 +325,14 @@ async function fetchAvailableModels(chatEndpoint, key) {
         });
 
         if (!res.ok) {
-            hint.textContent = `加载失败 (HTTP ${res.status})，请手动输入模型名`;
+            hint.textContent = chrome.i18n.getMessage('optionsErrorLoadFail', [res.status.toString()]);
             return;
         }
 
         const result = await res.json();
         const models = result.data || result.models || [];
         if (!Array.isArray(models) || models.length === 0) {
-            hint.textContent = '未找到可用模型，请手动输入模型名';
+            hint.textContent = chrome.i18n.getMessage('optionsErrorNoModelFound');
             return;
         }
 
@@ -349,7 +363,7 @@ async function fetchAvailableModels(chatEndpoint, key) {
         // Add "manual input" option at the end
         const manualOption = document.createElement('option');
         manualOption.value = '__manual__';
-        manualOption.textContent = '✉️ 手动输入...';
+        manualOption.textContent = '✉️ ' + chrome.i18n.getMessage('optionsManualInput');
         select.appendChild(manualOption);
 
         // Show select, hide manual input
@@ -364,11 +378,11 @@ async function fetchAvailableModels(chatEndpoint, key) {
             $('#ai-model').value = modelIds[0];
         }
 
-        hint.textContent = `✅ 已加载 ${modelIds.length} 个可用模型`;
-        showSaveStatus(`已加载 ${modelIds.length} 个可用模型`);
+        hint.textContent = `✅ ${chrome.i18n.getMessage('optionsLoadedModels', [modelIds.length.toString()])}`;
+        showSaveStatus(chrome.i18n.getMessage('optionsLoadedModels', [modelIds.length.toString()]));
     } catch (err) {
         console.warn('Failed to fetch models:', err);
-        hint.textContent = `加载模型失败: ${err.message}，请手动输入`;
+        hint.textContent = chrome.i18n.getMessage('optionsErrorLoadModelMessage', [err.message]);
     }
 }
 
@@ -386,7 +400,7 @@ async function handleSave() {
 
     // Warn if repo name changed
     if (originalRepoName && newRepoName !== originalRepoName) {
-        if (!confirm(`\u4ed3\u5e93\u540d\u4ece\u300c${originalRepoName}\u300d\u6539\u4e3a\u300c${newRepoName}\u300d\uff0c\u8fd9\u5c06\u65ad\u5f00\u4e0e\u65e7\u4ed3\u5e93\u7684\u540c\u6b65\u3002\u786e\u5b9a\u8981\u4fdd\u5b58\u5417\uff1f`)) {
+        if (!confirm(chrome.i18n.getMessage('optionsConfirmChangeRepo', [originalRepoName, newRepoName]))) {
             return;
         }
     }
@@ -413,7 +427,7 @@ async function handleSave() {
         chrome.alarms.create('auto-sync', { periodInMinutes: settings.syncInterval });
     }
 
-    showSaveStatus('设置已保存 ✓');
+    showSaveStatus(chrome.i18n.getMessage('optionsSavedSettings') + ' ✓');
 }
 
 function showSaveStatus(text) {
@@ -427,9 +441,9 @@ async function handleExportMarkdown() {
     try {
         const markdown = await exportToMarkdown();
         downloadFile('github-stars.md', markdown, 'text/markdown');
-        showSaveStatus('Markdown 已导出');
+        showSaveStatus(chrome.i18n.getMessage('optionsExportedMarkdown'));
     } catch (err) {
-        showSaveStatus(`导出失败: ${err.message}`);
+        showSaveStatus(chrome.i18n.getMessage('optionsExportFailed', [err.message]));
     }
 }
 
@@ -437,9 +451,9 @@ async function handleExportJSON() {
     try {
         const data = await exportAllData();
         downloadFile('github-stars-data.json', JSON.stringify(data, null, 2), 'application/json');
-        showSaveStatus('JSON 已导出');
+        showSaveStatus(chrome.i18n.getMessage('optionsExportedJSON'));
     } catch (err) {
-        showSaveStatus(`导出失败: ${err.message}`);
+        showSaveStatus(chrome.i18n.getMessage('optionsExportFailed', [err.message]));
     }
 }
 

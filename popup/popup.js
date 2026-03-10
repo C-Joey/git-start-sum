@@ -21,6 +21,7 @@ const $$ = (sel) => document.querySelectorAll(sel);
 
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', async () => {
+    localizeHtmlPage();
     const settings = await getSettings();
 
     bindEvents();
@@ -32,6 +33,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadData(); // Don't await this, let it run in background so UI is interactive instantly
     }
 });
+
+// ===== Localization =====
+function localizeHtmlPage() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = chrome.i18n.getMessage(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        el.title = chrome.i18n.getMessage(el.getAttribute('data-i18n-title'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = chrome.i18n.getMessage(el.getAttribute('data-i18n-placeholder'));
+    });
+}
+
 
 // ===== Setup =====
 function showSetupScreen() {
@@ -53,6 +68,12 @@ function bindEvents() {
         await saveSettings({ githubToken: token });
         showMainContent();
         await loadData();
+    });
+
+    $('#setup-token').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            $('#setup-submit').click();
+        }
     });
 
     // Tabs
@@ -207,7 +228,7 @@ function setupAutocomplete(inputId, listId, getExistingTags) {
 
 // ===== Data Loading =====
 async function loadData() {
-    setStatus('正在加载本地缓存...');
+    setStatus(chrome.i18n.getMessage('msgLoadingCache'));
 
     try {
         // Load local data first
@@ -228,15 +249,15 @@ async function loadData() {
         if (allStars && allStars.length > 0) {
             renderStars();
             renderTagFilterBar();
-            setStatus(`已加载缓存 (${allStars.length} 个 Star) · 正在同步最新数据...`);
+            setStatus(chrome.i18n.getMessage('msgLoadedCache', [allStars.length.toString()]));
             $('#stars-stats').classList.remove('hidden');
-            $('#stars-stats').textContent = `共 ${allStars.length} 个 Star 项目 · ${allTags.length} 个标签`;
+            $('#stars-stats').textContent = chrome.i18n.getMessage('msgStarsStats', [allStars.length.toString(), allTags.length.toString()]);
         }
 
         // Fetch stars from GitHub API in the background
         const freshStars = await getAllStarredRepos((count) => {
             if (!allStars || allStars.length === 0) {
-                setStatus(`首次加载: 已获取 ${count} 个 Star...`);
+                setStatus(chrome.i18n.getMessage('msgFirstLoad', [count.toString()]));
             }
         });
 
@@ -259,11 +280,11 @@ async function loadData() {
         renderStars($('#search-input').value);
         renderTagFilterBar();
 
-        setStatus(`已同步最新数据 · 共 ${allStars.length} 个 Star`);
+        setStatus(chrome.i18n.getMessage('msgSyncDone', [allStars.length.toString()]));
         $('#stars-stats').classList.remove('hidden');
-        $('#stars-stats').textContent = `共 ${allStars.length} 个 Star 项目 · ${allTags.length} 个标签`;
+        $('#stars-stats').textContent = chrome.i18n.getMessage('msgStarsStats', [allStars.length.toString(), allTags.length.toString()]);
     } catch (err) {
-        setStatus(`错误: ${err.message}`);
+        setStatus(chrome.i18n.getMessage('msgError', [err.message]));
         if (!allStars || allStars.length === 0) {
             $('#stars-list').innerHTML = `
         <div class="empty-state">
@@ -305,7 +326,7 @@ function renderStars(searchQuery = '') {
         list.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🔍</div>
-        <p class="empty-state-text">${query ? '没有找到匹配的项目' : '暂无 Star 项目'}</p>
+        <p class="empty-state-text">${query ? chrome.i18n.getMessage('msgNoSearchMatch') : chrome.i18n.getMessage('msgNoStars')}</p>
       </div>`;
         return;
     }
@@ -321,7 +342,7 @@ function renderStars(searchQuery = '') {
         <div class="star-info">
           <div class="star-name">
             <a href="${star.url}" target="_blank" title="${star.fullName}">${star.fullName}</a>
-            ${star.isArchived ? '<span class="tag tag-orange" style="font-size:9px">archived</span>' : ''}
+            ${star.isArchived ? `<span class="tag tag-orange" style="font-size:9px">${chrome.i18n.getMessage('msgArchived')}</span>` : ''}
           </div>
           <div class="star-desc">${star.description || ''}</div>
           ${notePreview ? `<div class="star-note-preview">${data.note ? '📝' : '🤖'} ${truncateText(notePreview, 60)}</div>` : ''}
@@ -333,7 +354,7 @@ function renderStars(searchQuery = '') {
           ${tags.length > 0 ? `<div class="star-tags">${tags.map(t => `<span class="tag ${getTagColor(t)}" style="font-size:10px">${t}</span>`).join('')}</div>` : ''}
         </div>
         <div class="star-actions">
-          <button class="star-edit-btn" data-repo="${star.fullName}" title="编辑备注/标签">📝</button>
+          <button class="star-edit-btn" data-repo="${star.fullName}" title="${chrome.i18n.getMessage('msgEditNoteTags')}">📝</button>
         </div>
       </div>`;
     }).join('');
@@ -374,7 +395,7 @@ function renderTagFilterBar() {
     }
 
     bar.innerHTML = `
-    <span class="tag tag-filter ${!activeTagFilter ? 'active' : ''}" data-tag="">全部</span>
+    <span class="tag tag-filter ${!activeTagFilter ? 'active' : ''}" data-tag="">${chrome.i18n.getMessage('msgFilterAll')}</span>
     ${allTags.map(t => `<span class="tag tag-filter ${getTagColor(t)} ${activeTagFilter === t ? 'active' : ''}" data-tag="${t}">${t} (${tagCounts[t] || 0})</span>`).join('')}
   `;
 
@@ -394,8 +415,8 @@ function renderHistory() {
         list.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">📅</div>
-        <p class="empty-state-text">暂无浏览记录</p>
-        <p class="text-xs text-secondary" style="margin-top:8px">浏览 GitHub 仓库页面时自动记录</p>
+        <p class="empty-state-text">${chrome.i18n.getMessage('popupEmptyHistory')}</p>
+        <p class="text-xs text-secondary" style="margin-top:8px">${chrome.i18n.getMessage('popupEmptyHistoryDesc')}</p>
       </div>`;
         return;
     }
@@ -436,7 +457,7 @@ function renderTagManager() {
     }
 
     if (allTags.length === 0) {
-        list.innerHTML = '<p class="text-secondary text-sm">暂无标签，在此添加或在项目备注中添加</p>';
+        list.innerHTML = `<p class="text-secondary text-sm">${chrome.i18n.getMessage('msgNoTags')}</p>`;
         return;
     }
 
@@ -444,13 +465,13 @@ function renderTagManager() {
     <div class="tag-item">
       <span class="tag ${getTagColor(t)}">${t}</span>
       <span class="tag-count">${tagCounts[t] || 0}</span>
-      <span class="tag-delete" data-tag="${t}" title="删除标签">✕</span>
+      <span class="tag-delete" data-tag="${t}" title="${chrome.i18n.getMessage('popupBtnDeleteTag')}">✕</span>
     </div>
   `).join('');
 
     list.querySelectorAll('.tag-delete').forEach(el => {
         el.addEventListener('click', async () => {
-            if (confirm(`确定删除标签「${el.dataset.tag}」？所有项目上的此标签也会被移除。`)) {
+            if (confirm(chrome.i18n.getMessage('msgConfirmDeleteTag', [el.dataset.tag]))) {
                 await removeTag(el.dataset.tag);
                 allTags = await getTags();
                 starsData = await getStarsData();
@@ -482,7 +503,7 @@ function openModal(fullName) {
     $('#modal-note').value = data.note || '';
     $('#modal-ai-summary').innerHTML = data.aiSummary
         ? `<span style="color:var(--text-primary)">${data.aiSummary}</span>`
-        : '<span class="text-secondary text-sm">点击下方按钮生成 AI 总结</span>';
+        : `<span class="text-secondary text-sm">${chrome.i18n.getMessage('popupModalAIPromptFull')}</span>`;
 
     renderModalTags(data.tags || []);
     $('#note-modal').classList.remove('hidden');
@@ -497,7 +518,7 @@ function closeModal() {
     // Reset AI button state in case it was stuck
     const btn = $('#modal-ai-btn');
     btn.disabled = false;
-    btn.textContent = '✨ 生成 AI 总结';
+    btn.textContent = chrome.i18n.getMessage('popupModalAIBtn');
 
     $('#note-modal').classList.add('hidden');
     currentEditRepo = null;
@@ -506,11 +527,11 @@ function closeModal() {
 function renderModalTags(tags) {
     const container = $('#modal-tags');
     container.innerHTML = tags.map(t => `
-    <span class="tag ${getTagColor(t)}">
-      ${t}
-      <span class="tag-remove" data-tag="${t}">✕</span>
-    </span>
-  `).join('') || '<span class="text-secondary text-xs">暂无标签</span>';
+        <span class="tag ${getTagColor(t)}">
+            ${t}
+            <span class="tag-remove" data-tag="${t}">✕</span>
+        </span>
+    `).join('') || `<span class="text-secondary text-xs">${chrome.i18n.getMessage('msgEmptyTags')}</span>`;
 
     container.querySelectorAll('.tag-remove').forEach(el => {
         el.addEventListener('click', async () => {
@@ -554,7 +575,7 @@ async function handleModalSave() {
     starsData = await getStarsData();
     renderStars($('#search-input').value);
     closeModal();
-    setStatus('已保存');
+    setStatus(chrome.i18n.getMessage('msgSaved'));
 }
 
 async function handleAISummary() {
@@ -564,7 +585,7 @@ async function handleAISummary() {
     const configured = await isAIConfigured();
     if (!configured) {
         const summaryBox = $('#modal-ai-summary');
-        summaryBox.innerHTML = `<span style="color:var(--color-danger)">⚠️ 请先在<a href="#" id="go-settings-link" style="color:var(--color-accent);text-decoration:underline;margin:0 4px;">设置</a>中配置 AI API Key</span>`;
+        summaryBox.innerHTML = `<span style="color:var(--color-danger)">${chrome.i18n.getMessage('msgAIConfigWarning')} <a href="#" id="go-settings-link" style="color:var(--color-accent);text-decoration:underline;margin:0 4px;">${chrome.i18n.getMessage('msgSettingsInMessage')}</a></span>`;
         document.getElementById('go-settings-link')?.addEventListener('click', (e) => {
             e.preventDefault();
             chrome.runtime.openOptionsPage();
@@ -583,7 +604,7 @@ async function handleAISummary() {
     const btn = $('#modal-ai-btn');
     const summaryBox = $('#modal-ai-summary');
     btn.disabled = true;
-    btn.textContent = '⏳ 生成中...';
+    btn.textContent = chrome.i18n.getMessage('msgAIGenerating');
     summaryBox.innerHTML = '<div class="spinner" style="width:16px;height:16px;"></div>';
 
     try {
@@ -633,7 +654,7 @@ async function handleAISummary() {
     } finally {
         if (!signal.aborted) {
             btn.disabled = false;
-            btn.textContent = '✨ 生成 AI 总结';
+            btn.textContent = chrome.i18n.getMessage('popupModalAIBtn');
             currentAIController = null;
         }
     }
@@ -644,14 +665,14 @@ async function handleSync() {
     const btn = $('#btn-sync');
     btn.classList.add('syncing');
     btn.disabled = true;
-    setStatus('同步中...');
+    setStatus(chrome.i18n.getMessage('msgSyncing'));
 
     try {
         await syncToGitHub();
-        setStatus('同步完成');
-        setSyncStatus(`上次同步: ${new Date().toLocaleTimeString('zh-CN')}`);
+        setStatus(chrome.i18n.getMessage('msgSyncComplete'));
+        setSyncStatus(chrome.i18n.getMessage('msgLastSync', [new Date().toLocaleTimeString(chrome.i18n.getUILanguage())]));
     } catch (err) {
-        setStatus(`同步失败: ${err.message}`);
+        setStatus(chrome.i18n.getMessage('msgError', [err.message]));
     }
 
     btn.classList.remove('syncing');

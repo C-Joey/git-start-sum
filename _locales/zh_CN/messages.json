@@ -1,0 +1,674 @@
+{
+    "appName": {
+        "message": "GitHub Stars Manager"
+    },
+    "appDesc": {
+        "message": "管理你的 GitHub Star 项目：标签分类、备注/AI总结、浏览历史、数据同步"
+    },
+    "popupTitleStarsManager": {
+        "message": "Stars Manager"
+    },
+    "popupBtnSync": {
+        "message": "同步数据"
+    },
+    "popupBtnSettings": {
+        "message": "设置"
+    },
+    "popupSetupTitle": {
+        "message": "欢迎使用 Stars Manager"
+    },
+    "popupSetupDesc": {
+        "message": "首先配置你的 GitHub Token 来开始管理"
+    },
+    "popupSetupTokenPlaceholder": {
+        "message": "粘贴你的 GitHub Personal Access Token"
+    },
+    "popupSetupSubmit": {
+        "message": "开始使用"
+    },
+    "popupSetupHelpPrefix": {
+        "message": "需要 repo + gist 权限 · "
+    },
+    "popupSetupHelpLink": {
+        "message": "创建 Token →"
+    },
+    "popupTabStars": {
+        "message": "Stars"
+    },
+    "popupTabHistory": {
+        "message": "历史"
+    },
+    "popupTabTags": {
+        "message": "标签"
+    },
+    "popupSearchPlaceholder": {
+        "message": "搜索仓库名、描述、备注..."
+    },
+    "popupLoadingText": {
+        "message": "加载 Star 列表..."
+    },
+    "popupEmptyHistory": {
+        "message": "暂无浏览记录"
+    },
+    "popupEmptyHistoryDesc": {
+        "message": "浏览 GitHub 仓库页面时自动记录"
+    },
+    "popupNewTagPlaceholder": {
+        "message": "输入新标签名..."
+    },
+    "popupBtnAddTag": {
+        "message": "添加"
+    },
+    "popupModalLabelTags": {
+        "message": "🏷️ 标签"
+    },
+    "popupModalTagPlaceholder": {
+        "message": "添加标签..."
+    },
+    "popupModalBtnAddTag": {
+        "message": "+ 添加"
+    },
+    "popupModalLabelNote": {
+        "message": "📝 备注"
+    },
+    "popupModalNotePlaceholder": {
+        "message": "写下你对这个项目的备注..."
+    },
+    "popupModalLabelAI": {
+        "message": "🤖 AI 总结"
+    },
+    "popupModalAIPrompt": {
+        "message": "点击生成 AI 总结"
+    },
+    "popupModalAIBtn": {
+        "message": "✨ 生成 AI 总结"
+    },
+    "popupModalBtnSave": {
+        "message": "保存"
+    },
+    "popupStatusReady": {
+        "message": "就绪"
+    },
+    "msgLoadingCache": {
+        "message": "正在加载本地缓存..."
+    },
+    "msgLoadedCache": {
+        "message": "已加载缓存 ($COUNT$ 个 Star) · 正在同步最新数据...",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgStarsStats": {
+        "message": "共 $STARS$ 个 Star 项目 · $TAGS$ 个标签",
+        "placeholders": {
+            "stars": {
+                "content": "$1"
+            },
+            "tags": {
+                "content": "$2"
+            }
+        }
+    },
+    "msgFirstLoad": {
+        "message": "首次加载: 已获取 $COUNT$ 个 Star...",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgSyncDone": {
+        "message": "已同步最新数据 · 共 $COUNT$ 个 Star",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgError": {
+        "message": "错误: $MSG$",
+        "placeholders": {
+            "msg": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgNoSearchMatch": {
+        "message": "没有找到匹配的项目"
+    },
+    "msgNoStars": {
+        "message": "暂无 Star 项目"
+    },
+    "msgFilterAll": {
+        "message": "全部"
+    },
+    "msgNoTags": {
+        "message": "暂无标签，在此添加或在项目备注中添加"
+    },
+    "msgConfirmDeleteTag": {
+        "message": "确定删除标签「$TAG$」？所有项目上的此标签也会被移除。",
+        "placeholders": {
+            "tag": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgEmptyTags": {
+        "message": "暂无标签"
+    },
+    "msgSaved": {
+        "message": "已保存"
+    },
+    "msgAIConfigWarning": {
+        "message": "⚠️ 请先在"
+    },
+    "msgSettingsInMessage": {
+        "message": "设置"
+    },
+    "msgAIGenerating": {
+        "message": "⏳ 生成中..."
+    },
+    "msgSyncing": {
+        "message": "同步中..."
+    },
+    "msgSyncComplete": {
+        "message": "同步完成"
+    },
+    "msgLastSync": {
+        "message": "上次同步: $TIME$",
+        "placeholders": {
+            "time": {
+                "content": "$1"
+            }
+        }
+    },
+    "msgEditNoteTags": {
+        "message": "编辑备注/标签"
+    },
+    "msgArchived": {
+        "message": "archived"
+    },
+    "popupBtnDeleteTag": {
+        "message": "删除标签"
+    },
+    "popupModalAIPromptFull": {
+        "message": "点击下方按钮生成 AI 总结"
+    },
+    "optionsTitle": {
+        "message": "GitHub Stars Manager — 设置"
+    },
+    "optionsHeaderDesc": {
+        "message": "配置你的扩展设置"
+    },
+    "optionsSectionAuth": {
+        "message": "🔑 GitHub 认证"
+    },
+    "optionsTokenLabel": {
+        "message": "Personal Access Token"
+    },
+    "optionsTokenPlaceholder": {
+        "message": "ghp_xxxxxxxxxxxx"
+    },
+    "optionsBtnCheck": {
+        "message": "🔍 验证"
+    },
+    "optionsTokenHintContent": {
+        "message": "需要 repo + gist 权限。"
+    },
+    "optionsTokenHintLink": {
+        "message": "创建 Token →"
+    },
+    "optionsApiProxyLabel": {
+        "message": "API 代理 (可选)"
+    },
+    "optionsApiProxyPlaceholder": {
+        "message": "例如：https://api.github.com"
+    },
+    "optionsApiProxyHint": {
+        "message": "如果在国内访问报错，可使用加速代理，留空则默认 https://api.github.com"
+    },
+    "optionsSectionSync": {
+        "message": "🔄 数据同步"
+    },
+    "optionsSyncRepoLabel": {
+        "message": "同步仓库名"
+    },
+    "optionsSyncRepoPlaceholder": {
+        "message": "my-github-stars"
+    },
+    "optionsBtnEdit": {
+        "message": "修改"
+    },
+    "optionsSyncRepoHint": {
+        "message": "将自动创建为私有仓库"
+    },
+    "optionsSyncAutoLabel": {
+        "message": "启用自动同步"
+    },
+    "optionsSyncIntervalLabel": {
+        "message": "同步间隔（分钟）"
+    },
+    "optionsSectionAI": {
+        "message": "🤖 AI 总结"
+    },
+    "optionsAIProviderLabel": {
+        "message": "AI 服务商"
+    },
+    "optionsAIGemini": {
+        "message": "Google Gemini（免费）"
+    },
+    "optionsAIOpenAI": {
+        "message": "OpenAI"
+    },
+    "optionsAICustom": {
+        "message": "自定义 (OpenAI 兼容)"
+    },
+    "optionsAIKeyLabel": {
+        "message": "API Key"
+    },
+    "optionsAIKeyPlaceholder": {
+        "message": "输入你的 API Key"
+    },
+    "optionsAIGeminiHint": {
+        "message": "Gemini Key: "
+    },
+    "optionsAIGeminiHintLink": {
+        "message": "获取免费 Key →"
+    },
+    "optionsAICustomEndpointLabel": {
+        "message": "自定义 API 端点"
+    },
+    "optionsAICustomEndpointPlaceholder": {
+        "message": "https://api.example.com/v1/chat/completions"
+    },
+    "optionsAICustomEndpointHint": {
+        "message": "输入基地址（如 https://api.example.com）会自动补全为 /v1/chat/completions"
+    },
+    "optionsAIModelLabel": {
+        "message": "模型名称"
+    },
+    "optionsAIModelOptionDefault": {
+        "message": "-- 请先验证 API Key 以加载模型列表 --"
+    },
+    "optionsAIModelInputPlaceholder": {
+        "message": "手动输入模型名 (如 gpt-4o) 或先验证加载列表"
+    },
+    "optionsBtnLoadModels": {
+        "message": "📋 加载"
+    },
+    "optionsAIModelHint": {
+        "message": "点击验证按钮后会自动加载可用模型"
+    },
+    "optionsSectionHistory": {
+        "message": "📅 浏览历史"
+    },
+    "optionsRecordHistoryLabel": {
+        "message": "自动记录 GitHub 浏览历史"
+    },
+    "optionsRecordHistoryHint": {
+        "message": "记录你访问的 GitHub 仓库页面"
+    },
+    "optionsBtnClearHistory": {
+        "message": "清除浏览历史"
+    },
+    "optionsSectionExport": {
+        "message": "📤 导出数据"
+    },
+    "optionsBtnExportMd": {
+        "message": "📄 导出 Markdown"
+    },
+    "optionsBtnExportJson": {
+        "message": "💾 导出 JSON"
+    },
+    "optionsBtnSave": {
+        "message": "保存设置"
+    },
+    "optionsRepoLocked": {
+        "message": "仓库名已锁定，点击修改按钮解锁"
+    },
+    "optionsConfirmEditRepo": {
+        "message": "修改仓库名可能导致与已有同步仓库断开连接。确定要修改吗？"
+    },
+    "optionsBtnUnlocked": {
+        "message": "已解锁"
+    },
+    "optionsHintSaveRepo": {
+        "message": "修改后请点击保存"
+    },
+    "optionsConfirmClearHistory": {
+        "message": "确定清除所有浏览历史？此操作不可恢复。"
+    },
+    "optionsHistoryCleared": {
+        "message": "浏览历史已清除"
+    },
+    "optionsAIOpenAIHint": {
+        "message": "OpenAI Key: "
+    },
+    "optionsAIOpenAIHintLink": {
+        "message": "获取 Key →"
+    },
+    "optionsHintCustomKey": {
+        "message": "输入你的自定义 AI API Key"
+    },
+    "optionsErrorNoToken": {
+        "message": "请输入 Token"
+    },
+    "optionsValidating": {
+        "message": "验证中..."
+    },
+    "optionsValidatingDot": {
+        "message": "正在验证..."
+    },
+    "optionsConnected": {
+        "message": "已连接: $1 ($2 个公开仓库)",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            },
+            "2": {
+                "content": "$2"
+            }
+        }
+    },
+    "optionsValidateFailed": {
+        "message": "验证失败: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsErrorNoAPIKey": {
+        "message": "请输入 API Key"
+    },
+    "optionsGeminiKeyValid": {
+        "message": "Gemini API Key 有效"
+    },
+    "optionsProviderCustom": {
+        "message": "自定义"
+    },
+    "optionsAPIKeyValidProvider": {
+        "message": "API Key 有效 ($1)",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsLoadingModels": {
+        "message": "正在加载模型列表..."
+    },
+    "optionsErrorParseAPI": {
+        "message": "无法解析 API 地址，请手动输入模型名"
+    },
+    "optionsErrorLoadFail": {
+        "message": "加载失败 (HTTP $1)，请手动输入模型名",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsErrorNoModelFound": {
+        "message": "未找到可用模型，请手动输入模型名"
+    },
+    "optionsManualInput": {
+        "message": "手动输入..."
+    },
+    "optionsLoadedModels": {
+        "message": "已加载 $1 个可用模型",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsErrorLoadModelMessage": {
+        "message": "加载模型失败: $1，请手动输入",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsConfirmChangeRepo": {
+        "message": "仓库名从「$1」改为「$2」，这将断开与旧仓库的同步。确定要保存吗？",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            },
+            "2": {
+                "content": "$2"
+            }
+        }
+    },
+    "optionsSavedSettings": {
+        "message": "设置已保存"
+    },
+    "optionsExportedMarkdown": {
+        "message": "Markdown 已导出"
+    },
+    "optionsExportFailed": {
+        "message": "导出失败: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "optionsExportedJSON": {
+        "message": "JSON 已导出"
+    },
+    "timeAgoYears": {
+        "message": "$1年前",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoMonths": {
+        "message": "$1个月前",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoDays": {
+        "message": "$1天前",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoHours": {
+        "message": "$1小时前",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoMinutes": {
+        "message": "$1分钟前",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "timeAgoJustNow": {
+        "message": "刚刚"
+    },
+    "aiSummaryPrompt": {
+        "message": "你是一个技术项目总结助手。请返回一段 JSON 数据。\n包含两个字段：\n1. \"summary\": 用简洁的中文（1-2句话，不超过80字）总结该 GitHub 项目的用途和特点。\n2. \"tags\": 根据项目特征，从 [候选标签] 中选择最合适的 1-3 个标签。如果都不合适，也可以自己创建最合适的英文单词标签。\n\n候选标签: $1\n\n项目名称: $2\n项目描述: $3\nREADME 前500字: \n$4\n\n请仅返回合法的 JSON 对象，不要包含其他解释文本。例如：\n{\n  \"summary\": \"这是一个用于...\",\n  \"tags\": [\"Frontend\", \"React\"]\n}",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            },
+            "2": {
+                "content": "$2"
+            },
+            "3": {
+                "content": "$3"
+            },
+            "4": {
+                "content": "$4"
+            }
+        }
+    },
+    "aiSummaryNoTags": {
+        "message": "无"
+    },
+    "aiSummaryNoDesc": {
+        "message": "无描述"
+    },
+    "aiSummaryNoReadme": {
+        "message": "无 README"
+    },
+    "aiSummaryFail": {
+        "message": "总结生成失败"
+    },
+    "aiSummaryFormatError": {
+        "message": "AI 返回的数据格式不正确（非 JSON）:\n$1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "aiSummaryNoAIConfig": {
+        "message": "未配置 AI 服务"
+    },
+    "aiSummaryGeminiNoKey": {
+        "message": "请在设置中配置 Gemini API Key"
+    },
+    "aiSummaryTimeout": {
+        "message": "请求超时（30秒），请检查网络或 API Key"
+    },
+    "aiSummaryTimeoutCustom": {
+        "message": "请求超时（30秒），请检查网络或自定义 API 地址"
+    },
+    "aiSummaryGeminiError": {
+        "message": "Gemini API 错误: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "aiSummaryGeneralAPIError": {
+        "message": "AI API 错误: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "aiSummaryNoAIAPIKey": {
+        "message": "请在设置中配置 AI API Key"
+    },
+    "githubApiNoToken": {
+        "message": "请先配置 GitHub Token"
+    },
+    "githubApiRateLimit": {
+        "message": "GitHub API 速率限制，将在 $1 重置",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "githubApiError": {
+        "message": "GitHub API 错误: $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "githubApiSyncRepoDesc": {
+        "message": "⭐ My GitHub Stars — managed by GitHub Stars Manager"
+    },
+    "syncCommitData": {
+        "message": "📦 Sync stars data — $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncCommitReadme": {
+        "message": "📝 Update stars README — $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncCommitHistory": {
+        "message": "📅 Update browsing history — $1",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncReadmeTitle": {
+        "message": "# ⭐ My GitHub Stars\n\n> 由 [GitHub Stars Manager](https://github.com) 自动生成 | 共 $1 个项目\n\n---\n\n",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncReadmeUntagged": {
+        "message": "## 📂 未分类\n\n"
+    },
+    "syncReadmeLastUpdate": {
+        "message": "\n---\n\n*最后更新: $1*\n",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncReadmeNote": {
+        "message": "📝 **备注**"
+    },
+    "syncReadmeAISummary": {
+        "message": "🤖 **AI总结**"
+    },
+    "syncHistoryTitle": {
+        "message": "# 📅 GitHub 浏览历史\n\n> 仅自己可见 | 共 $1 条记录\n\n---\n\n",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            }
+        }
+    },
+    "syncShareTitle": {
+        "message": "# ⭐ $1\n\n> 精选自我的 GitHub Stars | 共 $2 个项目\n\n---\n\n",
+        "placeholders": {
+            "1": {
+                "content": "$1"
+            },
+            "2": {
+                "content": "$2"
+            }
+        }
+    },
+    "syncShareFooter": {
+        "message": "\n---\n\n*由 GitHub Stars Manager 生成*\n"
+    },
+    "bgAITimeout": {
+        "message": "AI 总结请求超时"
+    },
+    "contentAIGenerateFailGeneric": {
+        "message": "总结生成失败，请重试"
+    }
+}

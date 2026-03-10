@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Stars Manager — 设置</title>
+    <title data-i18n="optionsTitle">GitHub Stars Manager — 设置</title>
     <link rel="stylesheet" href="../styles/common.css">
     <link rel="stylesheet" href="options.css">
 </head>
@@ -13,29 +13,32 @@
     <div class="options-container">
         <header class="options-header">
             <h1>⭐ GitHub Stars Manager</h1>
-            <p class="text-secondary">配置你的扩展设置</p>
+            <p class="text-secondary" data-i18n="optionsHeaderDesc">配置你的扩展设置</p>
         </header>
 
         <main class="options-main">
             <!-- GitHub Token -->
             <section class="section card">
                 <h2 class="section-title">
-                    <span>🔑</span> GitHub 认证
+                    <span data-i18n="optionsSectionAuth">🔑 GitHub 认证</span>
                 </h2>
                 <div class="form-group">
-                    <label class="form-label">Personal Access Token</label>
+                    <label class="form-label" data-i18n="optionsTokenLabel">Personal Access Token</label>
                     <div class="input-with-action">
-                        <input type="password" id="github-token" class="input" placeholder="ghp_xxxxxxxxxxxx">
-                        <button id="btn-check-token" class="btn">🔍 验证</button>
+                        <input type="password" id="github-token" class="input"
+                            data-i18n-placeholder="optionsTokenPlaceholder" placeholder="ghp_xxxxxxxxxxxx">
+                        <button id="btn-check-token" class="btn" data-i18n="optionsBtnCheck">🔍 验证</button>
                     </div>
-                    <p class="form-hint">需要 <code>repo</code> + <code>gist</code> 权限。<a
+                    <p class="form-hint"><span data-i18n="optionsTokenHintContent">需要 repo + gist 权限。</span><a
                             href="https://github.com/settings/tokens/new?description=GitHub+Stars+Manager&scopes=repo,gist"
-                            target="_blank">创建 Token →</a></p>
+                            target="_blank" data-i18n="optionsTokenHintLink">创建 Token →</a></p>
                 </div>
                 <div class="form-group" style="margin-top:12px;">
-                    <label class="form-label">API 代理 (可选)</label>
-                    <input type="text" id="github-api-base" class="input" placeholder="例如：https://api.github.com">
-                    <p class="form-hint">如果在国内访问报错，可使用加速代理，留空则默认 <code>https://api.github.com</code></p>
+                    <label class="form-label" data-i18n="optionsApiProxyLabel">API 代理 (可选)</label>
+                    <input type="text" id="github-api-base" class="input"
+                        data-i18n-placeholder="optionsApiProxyPlaceholder" placeholder="例如：https://api.github.com">
+                    <p class="form-hint" data-i18n="optionsApiProxyHint">如果在国内访问报错，可使用加速代理，留空则默认 https://api.github.com
+                    </p>
                 </div>
                 <div id="token-status" class="status-badge hidden"></div>
             </section>
@@ -43,19 +46,20 @@
             <!-- Sync Settings -->
             <section class="section card">
                 <h2 class="section-title">
-                    <span>🔄</span> 数据同步
+                    <span data-i18n="optionsSectionSync">🔄 数据同步</span>
                 </h2>
                 <div class="form-group">
-                    <label class="form-label">同步仓库名</label>
+                    <label class="form-label" data-i18n="optionsSyncRepoLabel">同步仓库名</label>
                     <div class="input-with-action">
-                        <input type="text" id="sync-repo" class="input" placeholder="my-github-stars" readonly>
-                        <button id="btn-edit-repo" class="btn btn-sm">✏️ 修改</button>
+                        <input type="text" id="sync-repo" class="input"
+                            data-i18n-placeholder="optionsSyncRepoPlaceholder" placeholder="my-github-stars" readonly>
+                        <button id="btn-edit-repo" class="btn btn-sm" data-i18n="optionsBtnEdit">✏️ 修改</button>
                     </div>
-                    <p class="form-hint" id="sync-repo-hint">将自动创建为私有仓库</p>
+                    <p class="form-hint" id="sync-repo-hint" data-i18n="optionsSyncRepoHint">将自动创建为私有仓库</p>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">启用自动同步</label>
+                        <label class="form-label" data-i18n="optionsSyncAutoLabel">启用自动同步</label>
                     </div>
                     <label class="toggle">
                         <input type="checkbox" id="sync-enabled">
@@ -64,7 +68,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">同步间隔（分钟）</label>
+                        <label class="form-label" data-i18n="optionsSyncIntervalLabel">同步间隔（分钟）</label>
                     </div>
                     <input type="number" id="sync-interval" class="input input-sm" min="5" max="1440" value="30">
                 </div>
@@ -73,45 +77,51 @@
             <!-- AI Settings -->
             <section class="section card">
                 <h2 class="section-title">
-                    <span>🤖</span> AI 总结
+                    <span data-i18n="optionsSectionAI">🤖 AI 总结</span>
                 </h2>
                 <div class="form-group">
-                    <label class="form-label">AI 服务商</label>
+                    <label class="form-label" data-i18n="optionsAIProviderLabel">AI 服务商</label>
                     <select id="ai-provider" class="input">
-                        <option value="gemini">Google Gemini（免费）</option>
-                        <option value="openai">OpenAI</option>
-                        <option value="custom">自定义 (OpenAI 兼容)</option>
+                        <option value="gemini" data-i18n="optionsAIGemini">Google Gemini（免费）</option>
+                        <option value="openai" data-i18n="optionsAIOpenAI">OpenAI</option>
+                        <option value="custom" data-i18n="optionsAICustom">自定义 (OpenAI 兼容)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">API Key</label>
+                    <label class="form-label" data-i18n="optionsAIKeyLabel">API Key</label>
                     <div class="input-with-action">
-                        <input type="password" id="ai-key" class="input" placeholder="输入你的 API Key">
-                        <button id="btn-check-ai" class="btn">🔍 验证</button>
+                        <input type="password" id="ai-key" class="input" data-i18n-placeholder="optionsAIKeyPlaceholder"
+                            placeholder="输入你的 API Key">
+                        <button id="btn-check-ai" class="btn" data-i18n="optionsBtnCheck">🔍 验证</button>
                     </div>
-                    <p class="form-hint" id="ai-hint">Gemini Key: <a href="https://aistudio.google.com/apikey"
-                            target="_blank">获取免费 Key →</a></p>
+                    <p class="form-hint" id="ai-hint"><span data-i18n="optionsAIGeminiHint">Gemini Key: </span><a
+                            href="https://aistudio.google.com/apikey" target="_blank"
+                            data-i18n="optionsAIGeminiHintLink">获取免费 Key →</a></p>
                 </div>
                 <div id="ai-status" class="status-badge hidden"></div>
                 <div id="custom-ai-fields" class="hidden">
                     <div class="form-group" style="margin-top:12px;">
-                        <label class="form-label">自定义 API 端点</label>
+                        <label class="form-label" data-i18n="optionsAICustomEndpointLabel">自定义 API 端点</label>
                         <input type="text" id="ai-endpoint" class="input"
+                            data-i18n-placeholder="optionsAICustomEndpointPlaceholder"
                             placeholder="https://api.example.com/v1/chat/completions">
-                        <p class="form-hint">输入基地址（如 <code>https://api.example.com</code>）会自动补全为
-                            <code>/v1/chat/completions</code>
+                        <p class="form-hint" data-i18n="optionsAICustomEndpointHint">输入基地址（如
+                            https://api.example.com）会自动补全为 /v1/chat/completions
                         </p>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">模型名称</label>
+                        <label class="form-label" data-i18n="optionsAIModelLabel">模型名称</label>
                         <select id="ai-model-select" class="input" style="display:none;">
-                            <option value="">-- 请先验证 API Key 以加载模型列表 --</option>
+                            <option value="" data-i18n="optionsAIModelOptionDefault">-- 请先验证 API Key 以加载模型列表 --</option>
                         </select>
                         <div class="input-with-action" id="ai-model-manual-row">
-                            <input type="text" id="ai-model" class="input" placeholder="手动输入模型名 (如 gpt-4o) 或先验证加载列表">
-                            <button id="btn-load-models" class="btn btn-sm" title="加载模型列表">📋 加载</button>
+                            <input type="text" id="ai-model" class="input"
+                                data-i18n-placeholder="optionsAIModelInputPlaceholder"
+                                placeholder="手动输入模型名 (如 gpt-4o) 或先验证加载列表">
+                            <button id="btn-load-models" class="btn btn-sm" data-i18n-title="optionsBtnLoadModels"
+                                title="加载模型列表" data-i18n="optionsBtnLoadModels">📋 加载</button>
                         </div>
-                        <p class="form-hint" id="model-hint">点击验证按钮后会自动加载可用模型</p>
+                        <p class="form-hint" id="model-hint" data-i18n="optionsAIModelHint">点击验证按钮后会自动加载可用模型</p>
                     </div>
                 </div>
             </section>
@@ -119,35 +129,37 @@
             <!-- History Settings -->
             <section class="section card">
                 <h2 class="section-title">
-                    <span>📅</span> 浏览历史
+                    <span data-i18n="optionsSectionHistory">📅 浏览历史</span>
                 </h2>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">自动记录 GitHub 浏览历史</label>
-                        <p class="form-hint">记录你访问的 GitHub 仓库页面</p>
+                        <label class="form-label" data-i18n="optionsRecordHistoryLabel">自动记录 GitHub 浏览历史</label>
+                        <p class="form-hint" data-i18n="optionsRecordHistoryHint">记录你访问的 GitHub 仓库页面</p>
                     </div>
                     <label class="toggle">
                         <input type="checkbox" id="record-history" checked>
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
-                <button id="btn-clear-history" class="btn btn-danger btn-sm" style="margin-top:8px;">清除浏览历史</button>
+                <button id="btn-clear-history" class="btn btn-danger btn-sm" style="margin-top:8px;"
+                    data-i18n="optionsBtnClearHistory">清除浏览历史</button>
             </section>
 
             <!-- Export -->
             <section class="section card">
                 <h2 class="section-title">
-                    <span>📤</span> 导出数据
+                    <span data-i18n="optionsSectionExport">📤 导出数据</span>
                 </h2>
                 <div class="export-buttons">
-                    <button id="btn-export-md" class="btn">📄 导出 Markdown</button>
-                    <button id="btn-export-json" class="btn">💾 导出 JSON</button>
+                    <button id="btn-export-md" class="btn" data-i18n="optionsBtnExportMd">📄 导出 Markdown</button>
+                    <button id="btn-export-json" class="btn" data-i18n="optionsBtnExportJson">💾 导出 JSON</button>
                 </div>
             </section>
         </main>
 
         <footer class="options-footer">
-            <button id="btn-save" class="btn btn-primary" style="padding:8px 28px;">保存设置</button>
+            <button id="btn-save" class="btn btn-primary" style="padding:8px 28px;"
+                data-i18n="optionsBtnSave">保存设置</button>
             <span id="save-status" class="text-sm text-secondary"></span>
         </footer>
     </div>

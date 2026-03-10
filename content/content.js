@@ -45,9 +45,9 @@
         const noteBtn = document.createElement('li');
         noteBtn.className = 'gsm-injected';
         noteBtn.innerHTML = `
-      <button class="gsm-note-btn btn btn-sm" title="GitHub Stars Manager: 备注/标签">
+      <button class="gsm-note-btn btn btn-sm" title="${chrome.i18n.getMessage('contentBtnNoteTitle')}">
         <span class="gsm-icon">📝</span>
-        <span class="gsm-label">备注</span>
+        <span class="gsm-label">${chrome.i18n.getMessage('contentBtnNote')}</span>
       </button>`;
 
         if (repoActions) {
@@ -81,8 +81,8 @@
             noteWidget.innerHTML = `
         <div class="gsm-widget-header">
           <span class="gsm-icon">📝</span>
-          <span>Stars Manager</span>
-          <button class="gsm-widget-edit" title="编辑">✏️</button>
+          <span>${chrome.i18n.getMessage('contentWidgetTitle')}</span>
+          <button class="gsm-widget-edit" title="${chrome.i18n.getMessage('contentWidgetEdit')}">✏️</button>
         </div>
         <div class="gsm-widget-body">
           <div class="gsm-widget-note"></div>
@@ -106,7 +106,7 @@
 
             if (btnEl && (data.note || data.aiSummary)) {
                 btnEl.classList.add('gsm-has-note');
-                btnEl.querySelector('.gsm-label').textContent = '已备注';
+                btnEl.querySelector('.gsm-label').textContent = chrome.i18n.getMessage('contentLabelHasNote');
             }
 
             if (widgetEl) {
@@ -120,7 +120,7 @@
                     noteDiv.innerHTML = `<span class="gsm-ai-badge">🤖</span> ${data.aiSummary}`;
                     noteDiv.classList.add('gsm-has-content');
                 } else {
-                    noteDiv.innerHTML = '<span class="gsm-placeholder">点击编辑添加备注...</span>';
+                    noteDiv.innerHTML = `<span class="gsm-placeholder">${chrome.i18n.getMessage('contentPlaceholderNote')}</span>`;
                 }
 
                 if (data.tags && data.tags.length > 0) {
@@ -146,25 +146,25 @@
         </div>
         <div class="gsm-panel-body">
           <div class="gsm-field">
-            <label>🏷️ 标签</label>
+            <label>${chrome.i18n.getMessage('contentLabelTags')}</label>
             <div class="gsm-panel-tags"></div>
             <div class="gsm-tag-input-row">
-              <input type="text" class="gsm-input gsm-tag-input" placeholder="添加标签...">
-              <button class="gsm-btn gsm-tag-add">添加</button>
+              <input type="text" class="gsm-input gsm-tag-input" placeholder="${chrome.i18n.getMessage('contentPlaceholderAddTag')}">
+              <button class="gsm-btn gsm-tag-add">${chrome.i18n.getMessage('contentBtnAdd')}</button>
             </div>
           </div>
           <div class="gsm-field">
-            <label>📝 备注</label>
-            <textarea class="gsm-input gsm-note-textarea" rows="3" placeholder="写下你对这个项目的备注..."></textarea>
+            <label>${chrome.i18n.getMessage('contentLabelNote')}</label>
+            <textarea class="gsm-input gsm-note-textarea" rows="3" placeholder="${chrome.i18n.getMessage('contentPlaceholderNoteArea')}"></textarea>
           </div>
           <div class="gsm-field">
-            <label>🤖 AI 总结</label>
+            <label>${chrome.i18n.getMessage('contentLabelAI')}</label>
             <div class="gsm-ai-result"></div>
-            <button class="gsm-btn gsm-ai-generate">✨ 生成 AI 总结</button>
+            <button class="gsm-btn gsm-ai-generate">${chrome.i18n.getMessage('contentBtnAIGenerate')}</button>
           </div>
         </div>
         <div class="gsm-panel-footer">
-          <button class="gsm-btn gsm-btn-primary gsm-save">保存</button>
+          <button class="gsm-btn gsm-btn-primary gsm-save">${chrome.i18n.getMessage('contentBtnSave')}</button>
         </div>
       </div>`;
 
@@ -198,7 +198,7 @@
         <span class="gsm-tag">
           ${t}
           <span class="gsm-tag-remove" data-tag="${t}">✕</span>
-        </span>`).join('') || '<span class="gsm-placeholder">暂无标签</span>';
+        </span>`).join('') || `<span class="gsm-placeholder">${chrome.i18n.getMessage('contentNoTags')}</span>`;
 
             container.querySelectorAll('.gsm-tag-remove').forEach(el => {
                 el.addEventListener('click', () => {
@@ -230,8 +230,8 @@
             const btn = panel.querySelector('.gsm-ai-generate');
             const result = panel.querySelector('.gsm-ai-result');
             btn.disabled = true;
-            btn.textContent = '⏳ 生成中...';
-            result.textContent = '正在生成...';
+            btn.textContent = chrome.i18n.getMessage('contentAIGeneratingBtn');
+            result.textContent = chrome.i18n.getMessage('contentAIGenerating');
 
             try {
                 // Get fresh README content
@@ -247,7 +247,7 @@
                 // Wrap sendMessage in a Promise with timeout
                 const response = await new Promise((resolve, reject) => {
                     const timer = setTimeout(() => {
-                        reject(new Error('AI 总结超时，请检查 AI 设置和网络'));
+                        reject(new Error(chrome.i18n.getMessage('contentAITimeoutFront')));
                     }, 35000);
 
                     chrome.runtime.sendMessage({
@@ -263,7 +263,7 @@
                     }, (resp) => {
                         clearTimeout(timer);
                         if (chrome.runtime.lastError) {
-                            reject(new Error(chrome.runtime.lastError.message || '与扩展通信失败'));
+                            reject(new Error(chrome.runtime.lastError.message || chrome.i18n.getMessage('contentComError')));
                             return;
                         }
                         resolve(resp);
@@ -271,7 +271,7 @@
                 });
 
                 btn.disabled = false;
-                btn.textContent = '✨ 生成 AI 总结';
+                btn.textContent = chrome.i18n.getMessage('contentBtnAIGenerate');
 
                 if (response?.error) {
                     result.textContent = '❌ ' + response.error;
@@ -303,12 +303,12 @@
                         }
                     }
                 } else {
-                    result.textContent = '❌ 生成失败，未收到结果';
+                    result.textContent = '❌ ' + chrome.i18n.getMessage('contentAIGenerateFail');
                 }
             } catch (err) {
                 btn.disabled = false;
-                btn.textContent = '✨ 生成 AI 总结';
-                result.textContent = '❌ ' + (err.message || '生成失败');
+                btn.textContent = chrome.i18n.getMessage('contentBtnAIGenerate');
+                result.textContent = '❌ ' + (err.message || chrome.i18n.getMessage('contentAIGenerateFailGeneric'));
             }
         });
 

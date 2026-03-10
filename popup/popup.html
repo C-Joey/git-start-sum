@@ -14,34 +14,32 @@
   <header class="header">
     <div class="header-left">
       <span class="header-logo">⭐</span>
-      <h1 class="header-title">Stars Manager</h1>
+      <h1 class="header-title" data-i18n="popupTitleStarsManager">Stars Manager</h1>
     </div>
     <div class="header-actions">
-      <button id="btn-sync" class="btn-icon" title="同步数据">
+      <button id="btn-sync" class="btn-icon" data-i18n-title="popupBtnSync" title="同步数据">
         <svg width="20" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+          <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
         </svg>
       </button>
-      <button id="btn-settings" class="btn-icon" title="设置">
+      <button id="btn-settings" class="btn-icon" data-i18n-title="popupBtnSettings" title="设置">
         <svg width="20" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm112-260q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Z" />
+          <path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm112-260q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Z" />
         </svg>
       </button>
     </div>
   </header>
 
-  <!-- Setup Screen (shown when no token, visible by default) -->
+  <!-- Setup Screen -->
   <div id="setup-screen" class="setup-screen">
     <div class="setup-icon">🔑</div>
-    <h2 class="setup-title">欢迎使用 Stars Manager</h2>
-    <p class="setup-desc">首先配置你的 GitHub Token 来开始管理</p>
-    <input type="password" id="setup-token" class="input" placeholder="粘贴你的 GitHub Personal Access Token">
-    <button id="setup-submit" class="btn btn-primary" style="width:100%;margin-top:12px;">开始使用</button>
+    <h2 class="setup-title" data-i18n="popupSetupTitle">欢迎使用 Stars Manager</h2>
+    <p class="setup-desc" data-i18n="popupSetupDesc">首先配置你的 GitHub Token 来开始管理</p>
+    <input type="password" id="setup-token" class="input" data-i18n-placeholder="popupSetupTokenPlaceholder" placeholder="粘贴你的 GitHub Personal Access Token">
+    <button id="setup-submit" class="btn btn-primary" style="width:100%;margin-top:12px;" data-i18n="popupSetupSubmit">开始使用</button>
     <p class="setup-help text-xs text-secondary" style="margin-top:8px;">
-      需要 <code>repo</code> + <code>gist</code> 权限 ·
-      <a href="https://github.com/settings/tokens/new" target="_blank">创建 Token →</a>
+      <span data-i18n="popupSetupHelpPrefix">需要 repo + gist 权限 · </span>
+      <a href="https://github.com/settings/tokens/new" target="_blank" data-i18n="popupSetupHelpLink">创建 Token →</a>
     </p>
   </div>
 
@@ -51,40 +49,34 @@
     <nav class="tabs">
       <button class="tab active" data-tab="stars">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-          <path
-            d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z" />
+          <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z" />
         </svg>
-        Stars
+        <span data-i18n="popupTabStars">Stars</span>
       </button>
       <button class="tab" data-tab="history">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-          <path
-            d="M1.643 3.143.427 1.927A.25.25 0 0 0 0 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 0 0 .177-.427L2.715 4.215a6.5 6.5 0 1 1-1.18 4.458.75.75 0 1 0-1.493.154 8.001 8.001 0 1 0 1.6-5.684zM7.75 4a.75.75 0 0 1 .75.75v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.75.75 0 0 1 7 8.25v-3.5A.75.75 0 0 1 7.75 4z" />
+          <path d="M1.643 3.143.427 1.927A.25.25 0 0 0 0 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 0 0 .177-.427L2.715 4.215a6.5 6.5 0 1 1-1.18 4.458.75.75 0 1 0-1.493.154 8.001 8.001 0 1 0 1.6-5.684zM7.75 4a.75.75 0 0 1 .75.75v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.75.75 0 0 1 7 8.25v-3.5A.75.75 0 0 1 7.75 4z" />
         </svg>
-        历史
+        <span data-i18n="popupTabHistory">历史</span>
       </button>
       <button class="tab" data-tab="tags">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-          <path
-            d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.75 1.75 0 0 1 1 7.775zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25zM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+          <path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.75 1.75 0 0 1 1 7.775zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25zM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
         </svg>
-        标签
+        <span data-i18n="popupTabTags">标签</span>
       </button>
     </nav>
 
     <!-- Search Bar -->
     <div class="search-bar">
       <svg class="search-icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-        <path
-          d="M11.5 7a4.499 4.499 0 1 1-8.998 0A4.499 4.499 0 0 1 11.5 7zm-.82 4.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04z" />
+        <path d="M11.5 7a4.499 4.499 0 1 1-8.998 0A4.499 4.499 0 0 1 11.5 7zm-.82 4.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04z" />
       </svg>
-      <input type="text" id="search-input" class="search-input" placeholder="搜索仓库名、描述、备注...">
+      <input type="text" id="search-input" class="search-input" data-i18n-placeholder="popupSearchPlaceholder" placeholder="搜索仓库名、描述、备注...">
     </div>
 
     <!-- Tag Filter Bar -->
-    <div id="tag-filter-bar" class="tag-filter-bar hidden">
-      <!-- Dynamically populated -->
-    </div>
+    <div id="tag-filter-bar" class="tag-filter-bar hidden"></div>
 
     <!-- Stars List -->
     <div id="tab-stars" class="tab-content active">
@@ -92,7 +84,7 @@
         <!-- Loading state -->
         <div class="loading-state">
           <div class="spinner"></div>
-          <p class="text-secondary text-sm" style="margin-top:12px;">加载 Star 列表...</p>
+          <p class="text-secondary text-sm" style="margin-top:12px;" data-i18n="popupLoadingText">加载 Star 列表...</p>
         </div>
       </div>
       <div id="stars-stats" class="stars-stats hidden"></div>
@@ -103,7 +95,7 @@
       <div id="history-list" class="history-list">
         <div class="empty-state">
           <div class="empty-state-icon">📅</div>
-          <p class="empty-state-text">暂无浏览记录</p>
+          <p class="empty-state-text" data-i18n="popupEmptyHistory">暂无浏览记录</p>
         </div>
       </div>
     </div>
@@ -112,9 +104,9 @@
     <div id="tab-tags" class="tab-content hidden">
       <div class="tag-manager">
         <div class="tag-add-row autocomplete-container">
-          <input type="text" id="new-tag-input" class="input" placeholder="输入新标签名...">
+          <input type="text" id="new-tag-input" class="input" data-i18n-placeholder="popupNewTagPlaceholder" placeholder="输入新标签名...">
           <ul id="new-tag-autocomplete" class="autocomplete-list hidden"></ul>
-          <button id="btn-add-tag" class="btn btn-primary btn-sm">添加</button>
+          <button id="btn-add-tag" class="btn btn-primary btn-sm" data-i18n="popupBtnAddTag">添加</button>
         </div>
         <div id="tag-list" class="tag-list"></div>
       </div>
@@ -132,39 +124,39 @@
       <div class="modal-body">
         <!-- Tags -->
         <div class="form-group">
-          <label class="form-label">🏷️ 标签</label>
+          <label class="form-label" data-i18n="popupModalLabelTags">🏷️ 标签</label>
           <div id="modal-tags" class="modal-tags"></div>
           <div class="modal-tag-add flex gap-sm autocomplete-container" style="margin-top:8px;">
-            <input type="text" id="modal-tag-input" class="input" placeholder="添加标签..." style="flex:1;">
+            <input type="text" id="modal-tag-input" class="input" data-i18n-placeholder="popupModalTagPlaceholder" placeholder="添加标签..." style="flex:1;">
             <ul id="modal-tag-autocomplete" class="autocomplete-list hidden"></ul>
-            <button id="modal-tag-add-btn" class="btn btn-sm">+ 添加</button>
+            <button id="modal-tag-add-btn" class="btn btn-sm" data-i18n="popupModalBtnAddTag">+ 添加</button>
           </div>
         </div>
         <!-- Note -->
         <div class="form-group">
-          <label class="form-label">📝 备注</label>
-          <textarea id="modal-note" class="input" rows="3" placeholder="写下你对这个项目的备注..."></textarea>
+          <label class="form-label" data-i18n="popupModalLabelNote">📝 备注</label>
+          <textarea id="modal-note" class="input" rows="3" data-i18n-placeholder="popupModalNotePlaceholder" placeholder="写下你对这个项目的备注..."></textarea>
         </div>
         <!-- AI Summary -->
         <div class="form-group">
-          <label class="form-label">🤖 AI 总结</label>
+          <label class="form-label" data-i18n="popupModalLabelAI">🤖 AI 总结</label>
           <div id="modal-ai-summary" class="ai-summary-box">
-            <span class="text-secondary text-sm">点击生成 AI 总结</span>
+            <span class="text-secondary text-sm" data-i18n="popupModalAIPrompt">点击生成 AI 总结</span>
           </div>
           <button id="modal-ai-btn" class="btn btn-sm" style="margin-top:6px;">
-            ✨ 生成 AI 总结
+            <span data-i18n="popupModalAIBtn">✨ 生成 AI 总结</span>
           </button>
         </div>
       </div>
       <div class="modal-footer">
-        <button id="modal-save" class="btn btn-primary">保存</button>
+        <button id="modal-save" class="btn btn-primary" data-i18n="popupModalBtnSave">保存</button>
       </div>
     </div>
   </div>
 
   <!-- Status Bar -->
   <footer class="status-bar">
-    <span id="status-text" class="text-xs text-secondary">就绪</span>
+    <span id="status-text" class="text-xs text-secondary" data-i18n="popupStatusReady">就绪</span>
     <span id="status-sync" class="text-xs text-secondary"></span>
   </footer>
 
