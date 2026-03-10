@@ -86,23 +86,36 @@ function bindEvents() {
             $(`#tab-${tabName}`).classList.remove('hidden');
 
             // Show/hide search and tag filter bar based on tab
+            const searchInput = $('#search-input');
             if (tabName === 'stars') {
                 $('.search-bar').classList.remove('hidden');
                 $('#tag-filter-bar').classList.remove('hidden');
+                searchInput.placeholder = chrome.i18n.getMessage('popupSearchPlaceholder');
+                searchInput.value = '';
+            } else if (tabName === 'history') {
+                $('.search-bar').classList.remove('hidden');
+                $('#tag-filter-bar').classList.add('hidden');
+                searchInput.placeholder = chrome.i18n.getMessage('popupHistorySearchPlaceholder');
+                searchInput.value = '';
             } else {
                 $('.search-bar').classList.add('hidden');
                 $('#tag-filter-bar').classList.add('hidden');
             }
 
-            // Load history tab on first click
-            if (tabName === 'history') renderHistory();
+            if (tabName === 'stars') renderStars(searchInput.value);
+            if (tabName === 'history') renderHistory(searchInput.value);
             if (tabName === 'tags') renderTagManager();
         });
     });
 
     // Search
     $('#search-input').addEventListener('input', debounce((e) => {
-        renderStars(e.target.value);
+        const activeTab = document.querySelector('.tab.active').dataset.tab;
+        if (activeTab === 'stars') {
+            renderStars(e.target.value);
+        } else if (activeTab === 'history') {
+            renderHistory(e.target.value);
+        }
     }, 200));
 
     // Sync
@@ -409,21 +422,32 @@ function renderTagFilterBar() {
 }
 
 // ===== Render History =====
-function renderHistory() {
+function renderHistory(searchQuery = '') {
     const list = $('#history-list');
-    if (historyData.length === 0) {
+    const query = searchQuery.toLowerCase().trim();
+
+    let filtered = historyData;
+    if (query) {
+        filtered = filtered.filter(entry =>
+            entry.repo.toLowerCase().includes(query) ||
+            (entry.title || '').toLowerCase().includes(query) ||
+            (entry.description || '').toLowerCase().includes(query)
+        );
+    }
+
+    if (filtered.length === 0) {
         list.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">📅</div>
-        <p class="empty-state-text">${chrome.i18n.getMessage('popupEmptyHistory')}</p>
-        <p class="text-xs text-secondary" style="margin-top:8px">${chrome.i18n.getMessage('popupEmptyHistoryDesc')}</p>
+        <p class="empty-state-text">${query ? chrome.i18n.getMessage('msgNoSearchMatch') : chrome.i18n.getMessage('popupEmptyHistory')}</p>
+        ${!query ? `<p class="text-xs text-secondary" style="margin-top:8px">${chrome.i18n.getMessage('popupEmptyHistoryDesc')}</p>` : ''}
       </div>`;
         return;
     }
 
     // Group by date
     const byDate = {};
-    for (const entry of historyData) {
+    for (const entry of filtered) {
         const date = new Date(entry.visitedAt).toLocaleDateString('zh-CN');
         if (!byDate[date]) byDate[date] = [];
         byDate[date].push(entry);

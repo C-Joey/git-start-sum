@@ -670,5 +670,8 @@
     },
     "contentAIGenerateFailGeneric": {
         "message": "总结生成失败，请重试"
+    },
+    "popupHistorySearchPlaceholder": {
+        "message": "搜索浏览记录、仓库名..."
     }
 }

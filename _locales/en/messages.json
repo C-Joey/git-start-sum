@@ -670,5 +670,8 @@
     },
     "contentAIGenerateFailGeneric": {
         "message": "Summary generation failed, please try again"
+    },
+    "popupHistorySearchPlaceholder": {
+        "message": "Search history, repo name..."
     }
 }
