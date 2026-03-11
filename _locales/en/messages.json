@@ -668,6 +668,66 @@
     "bgAITimeout": {
         "message": "AI summary request timed out"
     },
+    "contentBtnNoteTitle": {
+        "message": "Add/Edit Note"
+    },
+    "contentBtnNote": {
+        "message": "Note"
+    },
+    "contentWidgetTitle": {
+        "message": "Stars Manager Note"
+    },
+    "contentWidgetEdit": {
+        "message": "Edit"
+    },
+    "contentLabelHasNote": {
+        "message": "Edit Note"
+    },
+    "contentPlaceholderNote": {
+        "message": "No note yet"
+    },
+    "contentLabelTags": {
+        "message": "🏷️ Tags"
+    },
+    "contentPlaceholderAddTag": {
+        "message": "Add a tag..."
+    },
+    "contentBtnAdd": {
+        "message": "Add"
+    },
+    "contentLabelNote": {
+        "message": "📝 Note"
+    },
+    "contentPlaceholderNoteArea": {
+        "message": "Write your note for this project..."
+    },
+    "contentLabelAI": {
+        "message": "🤖 AI Summary"
+    },
+    "contentBtnAIGenerate": {
+        "message": "✨ Generate AI Summary"
+    },
+    "contentBtnSave": {
+        "message": "Save"
+    },
+    "contentAIGeneratingBtn": {
+        "message": "Generating..."
+    },
+    "contentAIGenerating": {
+        "message": "⏳ Generating..."
+    },
+    "contentNoTags": {
+        "message": "No tags"
+    },
+    "contentAITimeoutFront": {
+        "message": "Request timed out"
+    },
+    "contentComError": {
+        "message": "Communication error"
+    },
+    "contentAIGenerateFail": {
+        "message": "Summary generation failed"
+    },
     "contentAIGenerateFailGeneric": {
         "message": "Summary generation failed, please try again"
     },

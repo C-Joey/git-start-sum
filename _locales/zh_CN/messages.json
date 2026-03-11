@@ -668,6 +668,66 @@
     "bgAITimeout": {
         "message": "AI 总结请求超时"
     },
+    "contentBtnNoteTitle": {
+        "message": "添加/编辑备注"
+    },
+    "contentBtnNote": {
+        "message": "备注"
+    },
+    "contentWidgetTitle": {
+        "message": "Stars Manager 备注"
+    },
+    "contentWidgetEdit": {
+        "message": "编辑"
+    },
+    "contentLabelHasNote": {
+        "message": "编辑备注"
+    },
+    "contentPlaceholderNote": {
+        "message": "暂无备注"
+    },
+    "contentLabelTags": {
+        "message": "🏷️ 标签"
+    },
+    "contentPlaceholderAddTag": {
+        "message": "添加标签..."
+    },
+    "contentBtnAdd": {
+        "message": "添加"
+    },
+    "contentLabelNote": {
+        "message": "📝 备注"
+    },
+    "contentPlaceholderNoteArea": {
+        "message": "写下你对这个项目的备注..."
+    },
+    "contentLabelAI": {
+        "message": "🤖 AI 总结"
+    },
+    "contentBtnAIGenerate": {
+        "message": "✨ 生成 AI 总结"
+    },
+    "contentBtnSave": {
+        "message": "保存"
+    },
+    "contentAIGeneratingBtn": {
+        "message": "生成中..."
+    },
+    "contentAIGenerating": {
+        "message": "⏳ 生成中..."
+    },
+    "contentNoTags": {
+        "message": "暂无标签"
+    },
+    "contentAITimeoutFront": {
+        "message": "请求超时"
+    },
+    "contentComError": {
+        "message": "通信错误"
+    },
+    "contentAIGenerateFail": {
+        "message": "总结生成失败"
+    },
     "contentAIGenerateFailGeneric": {
         "message": "总结生成失败，请重试"
     },
