@@ -10,17 +10,28 @@ GitHub Stars Manager 是一个原生 Manifest V3 Chrome 插件，用来管理 Gi
 
 ## 界面预览
 
-![插件弹窗](docs/assets/popup.svg)
-
-![设置页](docs/assets/options.svg)
-
-![GitHub 注入面板](docs/assets/github-panel.svg)
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/assets/popup.svg" alt="插件弹窗" width="100%">
+    </td>
+    <td width="50%">
+      <img src="docs/assets/options.svg" alt="设置页" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/assets/github-panel.svg" alt="GitHub 注入面板" width="100%">
+    </td>
+    <td width="50%">
+      <img src="docs/assets/demo.svg" alt="功能演示流程" width="100%">
+    </td>
+  </tr>
+</table>
 
 ## 功能演示 GIF
 
-下面是功能流程示意图。后续如果录制真实 GIF，可以直接替换为 `docs/assets/demo.gif`。
-
-![功能演示流程](docs/assets/demo.svg)
+上面的第四张图是功能流程示意图。后续如果录制真实 GIF，可以替换为 `docs/assets/demo.gif`。
 
 真实 GIF 建议覆盖这条主流程：
 
