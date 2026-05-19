@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" role="img" aria-label="GitHub Stars Manager options preview">
+  <rect width="960" height="640" fill="#f6f8fa"/>
+  <rect x="120" y="44" width="720" height="552" rx="16" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="162" y="96" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="700" fill="#24292f">GitHub Stars Manager 设置</text>
+  <g font-family="Inter,Arial,sans-serif">
+    <rect x="162" y="130" width="636" height="98" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+    <text x="186" y="162" font-size="18" font-weight="700" fill="#24292f">GitHub Token</text>
+    <rect x="186" y="178" width="440" height="34" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <text x="202" y="200" font-size="13" fill="#6e7781">ghp_xxxxxxxxxxxx</text>
+    <rect x="642" y="178" width="96" height="34" rx="8" fill="#0969da"/>
+    <text x="674" y="200" font-size="14" fill="#ffffff">验证</text>
+    <rect x="162" y="246" width="636" height="126" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+    <text x="186" y="278" font-size="18" font-weight="700" fill="#24292f">AI 配置</text>
+    <rect x="186" y="296" width="176" height="34" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <text x="204" y="318" font-size="13" fill="#57606a">Gemini</text>
+    <rect x="380" y="296" width="246" height="34" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <text x="398" y="318" font-size="13" fill="#6e7781">API Key</text>
+    <rect x="642" y="296" width="96" height="34" rx="8" fill="#0969da"/>
+    <text x="674" y="318" font-size="14" fill="#ffffff">验证</text>
+    <text x="186" y="352" font-size="13" fill="#57606a">支持 Gemini、OpenAI 和兼容 OpenAI 的自定义接口</text>
+    <rect x="162" y="390" width="636" height="142" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+    <text x="186" y="422" font-size="18" font-weight="700" fill="#24292f">外观</text>
+    <text x="186" y="458" font-size="14" fill="#57606a">主题</text>
+    <rect x="250" y="438" width="160" height="34" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <text x="268" y="460" font-size="13" fill="#24292f">跟随系统</text>
+    <text x="452" y="458" font-size="14" fill="#57606a">语言</text>
+    <rect x="516" y="438" width="160" height="34" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <text x="534" y="460" font-size="13" fill="#24292f">简体中文</text>
+    <text x="186" y="504" font-size="13" fill="#57606a">插件弹窗、设置页和 GitHub 页面注入面板都会应用这些设置。</text>
+  </g>
+</svg>

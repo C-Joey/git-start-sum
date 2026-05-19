@@ -10,37 +10,25 @@ GitHub Stars Manager 是一个原生 Manifest V3 Chrome 插件，用来管理 Gi
 
 ## 界面预览
 
-截图建议放在 `docs/assets/` 目录，推荐命名如下：
+![插件弹窗](docs/assets/popup.svg)
 
-| 场景 | 推荐文件 | 说明 |
-| --- | --- | --- |
-| 插件弹窗 | `docs/assets/popup.png` | 展示 Star 列表、搜索、标签筛选和主题按钮 |
-| 设置页 | `docs/assets/options.png` | 展示 Token、AI、同步、主题和语言配置 |
-| GitHub 注入面板 | `docs/assets/github-panel.png` | 展示仓库页面里的备注、标签和 AI 摘要面板 |
+![设置页](docs/assets/options.svg)
 
-如果这些图片存在，可以把下面三行取消注释后直接展示：
-
-```md
-![插件弹窗](docs/assets/popup.png)
-![设置页](docs/assets/options.png)
-![GitHub 注入面板](docs/assets/github-panel.png)
-```
+![GitHub 注入面板](docs/assets/github-panel.svg)
 
 ## 功能演示 GIF
 
-推荐录制一个 `docs/assets/demo.gif`，覆盖这条主流程：
+下面是功能流程示意图。后续如果录制真实 GIF，可以直接替换为 `docs/assets/demo.gif`。
+
+![功能演示流程](docs/assets/demo.svg)
+
+真实 GIF 建议覆盖这条主流程：
 
 1. 打开插件弹窗，搜索一个 Star 仓库。
 2. 给仓库添加标签和备注。
 3. 在 GitHub 仓库页面打开注入面板。
 4. 生成 AI 摘要并保存。
 5. 切换白天/黑夜主题和中英文语言。
-
-GIF 准备好后，可以在这里展示：
-
-```md
-![功能演示](docs/assets/demo.gif)
-```
 
 ## 主要功能
 

@@ -8,23 +8,15 @@ GitHub Stars Manager is a native Manifest V3 Chrome extension for organizing Git
 
 ## Screenshots and Demo
 
-Recommended asset paths:
+![Popup](docs/assets/popup.svg)
 
-| Scene | File |
-| --- | --- |
-| Popup | `docs/assets/popup.png` |
-| Options page | `docs/assets/options.png` |
-| GitHub injected panel | `docs/assets/github-panel.png` |
-| Demo GIF | `docs/assets/demo.gif` |
+![Options](docs/assets/options.svg)
 
-Uncomment these lines after the assets are added:
+![GitHub panel](docs/assets/github-panel.svg)
 
-```md
-![Popup](docs/assets/popup.png)
-![Options](docs/assets/options.png)
-![GitHub panel](docs/assets/github-panel.png)
-![Demo](docs/assets/demo.gif)
-```
+The demo flow below can be replaced with `docs/assets/demo.gif` after a real GIF is recorded.
+
+![Demo flow](docs/assets/demo.svg)
 
 ## Features
 

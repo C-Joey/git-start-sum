@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" role="img" aria-label="GitHub Stars Manager popup preview">
+  <rect width="960" height="640" fill="#eef2f6"/>
+  <rect x="270" y="44" width="420" height="552" rx="18" fill="#f6f8fa" stroke="#d0d7de"/>
+  <rect x="294" y="68" width="372" height="52" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="318" y="101" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="700" fill="#24292f">GitHub Stars</text>
+  <circle cx="594" cy="94" r="16" fill="#0969da"/>
+  <circle cx="636" cy="94" r="16" fill="#57606a"/>
+  <rect x="294" y="138" width="372" height="42" rx="10" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="318" y="164" font-family="Inter,Arial,sans-serif" font-size="15" fill="#6e7781">搜索仓库、语言、标签、备注...</text>
+  <rect x="294" y="198" width="86" height="28" rx="14" fill="#0969da"/>
+  <text x="318" y="217" font-family="Inter,Arial,sans-serif" font-size="13" fill="#ffffff">全部</text>
+  <rect x="390" y="198" width="94" height="28" rx="14" fill="#ddf4ff" stroke="#54aeef"/>
+  <text x="414" y="217" font-family="Inter,Arial,sans-serif" font-size="13" fill="#0969da">AI</text>
+  <rect x="494" y="198" width="112" height="28" rx="14" fill="#dafbe1" stroke="#4ac26b"/>
+  <text x="518" y="217" font-family="Inter,Arial,sans-serif" font-size="13" fill="#1a7f37">Frontend</text>
+  <g font-family="Inter,Arial,sans-serif">
+    <rect x="294" y="246" width="372" height="86" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+    <circle cx="326" cy="289" r="20" fill="#57606a"/>
+    <text x="360" y="276" font-size="17" font-weight="700" fill="#0969da">owner/awesome-tool</text>
+    <text x="360" y="300" font-size="13" fill="#57606a">高效管理开发工具和项目资料</text>
+    <text x="360" y="322" font-size="12" fill="#6e7781">JavaScript · ★ 12.4K · 2天前</text>
+    <rect x="604" y="274" width="34" height="34" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+    <text x="614" y="298" font-size="16" fill="#57606a">✎</text>
+    <rect x="294" y="346" width="372" height="86" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+    <circle cx="326" cy="389" r="20" fill="#8957e5"/>
+    <text x="360" y="376" font-size="17" font-weight="700" fill="#0969da">team/ui-kit</text>
+    <text x="360" y="400" font-size="13" fill="#57606a">组件库、设计系统、主题变量</text>
+    <text x="360" y="422" font-size="12" fill="#6e7781">TypeScript · ★ 8.1K · 1周前</text>
+    <rect x="604" y="374" width="34" height="34" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+    <text x="614" y="398" font-size="16" fill="#57606a">✎</text>
+    <rect x="294" y="446" width="372" height="86" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+    <circle cx="326" cy="489" r="20" fill="#1a7f37"/>
+    <text x="360" y="476" font-size="17" font-weight="700" fill="#0969da">dev/search-lab</text>
+    <text x="360" y="500" font-size="13" fill="#57606a">多语言搜索、别名匹配、历史筛选</text>
+    <text x="360" y="522" font-size="12" fill="#6e7781">Python · ★ 3.7K · 刚刚</text>
+  </g>
+</svg>

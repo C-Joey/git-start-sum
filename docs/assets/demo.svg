@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="GitHub Stars Manager demo flow">
+  <rect width="960" height="540" fill="#0d1117"/>
+  <text x="64" y="70" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="700" fill="#f0f6fc">功能演示流程</text>
+  <g font-family="Inter,Arial,sans-serif" font-size="18">
+    <rect x="64" y="118" width="188" height="118" rx="14" fill="#161b22" stroke="#30363d"/>
+    <text x="92" y="158" fill="#58a6ff" font-weight="700">1. 搜索 Star</text>
+    <text x="92" y="196" fill="#c9d1d9" font-size="14">按名称、语言、标签、备注匹配</text>
+    <path d="M270 177h68" stroke="#8b949e" stroke-width="3"/>
+    <path d="M326 164l16 13-16 13" fill="none" stroke="#8b949e" stroke-width="3"/>
+    <rect x="358" y="118" width="188" height="118" rx="14" fill="#161b22" stroke="#30363d"/>
+    <text x="386" y="158" fill="#7ee787" font-weight="700">2. 标签备注</text>
+    <text x="386" y="196" fill="#c9d1d9" font-size="14">保存项目用途和分类</text>
+    <path d="M564 177h68" stroke="#8b949e" stroke-width="3"/>
+    <path d="M620 164l16 13-16 13" fill="none" stroke="#8b949e" stroke-width="3"/>
+    <rect x="652" y="118" width="244" height="118" rx="14" fill="#161b22" stroke="#30363d"/>
+    <text x="680" y="158" fill="#d2a8ff" font-weight="700">3. GitHub 面板</text>
+    <text x="680" y="196" fill="#c9d1d9" font-size="14">在仓库页直接编辑资料</text>
+    <rect x="210" y="306" width="226" height="118" rx="14" fill="#161b22" stroke="#30363d"/>
+    <text x="238" y="346" fill="#ffa657" font-weight="700">4. AI 摘要</text>
+    <text x="238" y="384" fill="#c9d1d9" font-size="14">总结 README 并推荐标签</text>
+    <path d="M454 365h68" stroke="#8b949e" stroke-width="3"/>
+    <path d="M510 352l16 13-16 13" fill="none" stroke="#8b949e" stroke-width="3"/>
+    <rect x="542" y="306" width="226" height="118" rx="14" fill="#161b22" stroke="#30363d"/>
+    <text x="570" y="346" fill="#79c0ff" font-weight="700">5. 主题语言</text>
+    <text x="570" y="384" fill="#c9d1d9" font-size="14">白天/黑夜、中英文切换</text>
+  </g>
+  <text x="64" y="492" font-family="Inter,Arial,sans-serif" font-size="14" fill="#8b949e">实际 GIF 可替换为 docs/assets/demo.gif</text>
+</svg>
