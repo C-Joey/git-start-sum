@@ -3,13 +3,17 @@
 import { getSettings, saveSettings, clearHistory, exportAllData } from '../lib/storage.js';
 import { getCurrentUser } from '../lib/github-api.js';
 import { exportToMarkdown } from '../lib/sync.js';
+import { applyTheme } from '../lib/theme.js';
+import { initI18n, localizeDocument, t } from '../lib/i18n.js';
 
 const $ = (sel) => document.querySelector(sel);
 
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', async () => {
-    localizeHtmlPage();
     const settings = await getSettings();
+    await initI18n(settings.appLanguage);
+    applyTheme(settings.theme);
+    localizeHtmlPage();
     originalRepoName = settings.syncRepoName || '';
     loadSettingsToForm(settings);
     bindEvents();
@@ -17,15 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // ===== Localization =====
 function localizeHtmlPage() {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        el.textContent = chrome.i18n.getMessage(el.getAttribute('data-i18n'));
-    });
-    document.querySelectorAll('[data-i18n-title]').forEach(el => {
-        el.title = chrome.i18n.getMessage(el.getAttribute('data-i18n-title'));
-    });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        el.placeholder = chrome.i18n.getMessage(el.getAttribute('data-i18n-placeholder'));
-    });
+    localizeDocument();
 }
 
 function loadSettingsToForm(settings) {
@@ -39,6 +35,8 @@ function loadSettingsToForm(settings) {
     $('#ai-endpoint').value = settings.aiCustomEndpoint || '';
     $('#ai-model').value = settings.aiCustomModel || '';
     $('#record-history').checked = settings.recordHistory !== false;
+    $('#theme').value = settings.theme || 'system';
+    $('#app-language').value = settings.appLanguage || 'system';
 
     updateAIFields(settings.aiProvider);
 
@@ -49,13 +47,14 @@ function loadSettingsToForm(settings) {
     if (settings.syncRepoName) {
         repoInput.readOnly = true;
         repoInput.style.opacity = '0.7';
-        editBtn.textContent = '✏️ ' + chrome.i18n.getMessage('optionsBtnEdit');
-        hint.textContent = '🔒 ' + chrome.i18n.getMessage('optionsRepoLocked');
+        editBtn.style.display = '';
+        editBtn.textContent = '✏️ ' + t('optionsBtnEdit');
+        hint.textContent = '🔒 ' + t('optionsRepoLocked');
     } else {
         repoInput.readOnly = false;
         repoInput.style.opacity = '1';
         editBtn.style.display = 'none';
-        hint.textContent = chrome.i18n.getMessage('optionsSyncRepoHint');
+        hint.textContent = t('optionsSyncRepoHint');
     }
 }
 
@@ -75,16 +74,23 @@ function bindEvents() {
     // Auto-complete custom endpoint URL on blur
     $('#ai-endpoint').addEventListener('blur', autoCompleteEndpoint);
 
+    $('#app-language').addEventListener('change', async (e) => {
+        await initI18n(e.target.value);
+        localizeHtmlPage();
+        updateAIFields($('#ai-provider').value);
+        refreshSyncRepoHint();
+    });
+
     // Edit repo name button
     $('#btn-edit-repo').addEventListener('click', () => {
         const repoInput = $('#sync-repo');
         if (repoInput.readOnly) {
-            if (confirm(chrome.i18n.getMessage('optionsConfirmEditRepo'))) {
+            if (confirm(t('optionsConfirmEditRepo'))) {
                 repoInput.readOnly = false;
                 repoInput.style.opacity = '1';
                 repoInput.focus();
-                $('#btn-edit-repo').textContent = '🔓 ' + chrome.i18n.getMessage('optionsBtnUnlocked');
-                $('#sync-repo-hint').textContent = '⚠️ ' + chrome.i18n.getMessage('optionsHintSaveRepo');
+                $('#btn-edit-repo').textContent = '🔓 ' + t('optionsBtnUnlocked');
+                $('#sync-repo-hint').textContent = '⚠️ ' + t('optionsHintSaveRepo');
             }
         }
     });
@@ -115,11 +121,25 @@ function bindEvents() {
 
     // Clear history
     $('#btn-clear-history').addEventListener('click', async () => {
-        if (confirm(chrome.i18n.getMessage('optionsConfirmClearHistory'))) {
+        if (confirm(t('optionsConfirmClearHistory'))) {
             await clearHistory();
-            showSaveStatus(chrome.i18n.getMessage('optionsHistoryCleared'));
+            showSaveStatus(t('optionsHistoryCleared'));
         }
     });
+}
+
+function refreshSyncRepoHint() {
+    const repoInput = $('#sync-repo');
+    const editBtn = $('#btn-edit-repo');
+    const hint = $('#sync-repo-hint');
+
+    if (repoInput.value.trim()) {
+        editBtn.textContent = repoInput.readOnly ? '✏️ ' + t('optionsBtnEdit') : '🔓 ' + t('optionsBtnUnlocked');
+        hint.textContent = repoInput.readOnly ? '🔒 ' + t('optionsRepoLocked') : '⚠️ ' + t('optionsHintSaveRepo');
+        return;
+    }
+
+    hint.textContent = t('optionsSyncRepoHint');
 }
 
 function updateAIFields(provider) {
@@ -133,11 +153,11 @@ function updateAIFields(provider) {
     }
 
     if (provider === 'gemini') {
-        hint.innerHTML = `<span data-i18n="optionsAIGeminiHint">${chrome.i18n.getMessage('optionsAIGeminiHint')}</span><a href="https://aistudio.google.com/apikey" target="_blank" data-i18n="optionsAIGeminiHintLink">${chrome.i18n.getMessage('optionsAIGeminiHintLink')}</a>`;
+        hint.innerHTML = `<span data-i18n="optionsAIGeminiHint">${t('optionsAIGeminiHint')}</span><a href="https://aistudio.google.com/apikey" target="_blank" data-i18n="optionsAIGeminiHintLink">${t('optionsAIGeminiHintLink')}</a>`;
     } else if (provider === 'openai') {
-        hint.innerHTML = `<span data-i18n="optionsAIOpenAIHint">${chrome.i18n.getMessage('optionsAIOpenAIHint')}</span><a href="https://platform.openai.com/api-keys" target="_blank" data-i18n="optionsAIOpenAIHintLink">${chrome.i18n.getMessage('optionsAIOpenAIHintLink')}</a>`;
+        hint.innerHTML = `<span data-i18n="optionsAIOpenAIHint">${t('optionsAIOpenAIHint')}</span><a href="https://platform.openai.com/api-keys" target="_blank" data-i18n="optionsAIOpenAIHintLink">${t('optionsAIOpenAIHintLink')}</a>`;
     } else {
-        hint.textContent = chrome.i18n.getMessage('optionsHintCustomKey');
+        hint.textContent = t('optionsHintCustomKey');
     }
 }
 
@@ -180,25 +200,25 @@ async function validateToken() {
     const btn = $('#btn-check-token');
 
     if (!token) {
-        showBadge(statusEl, 'error', chrome.i18n.getMessage('optionsErrorNoToken'));
+        showBadge(statusEl, 'error', t('optionsErrorNoToken'));
         return;
     }
 
     btn.disabled = true;
-    btn.textContent = '⏳ ' + chrome.i18n.getMessage('optionsValidating');
-    showBadge(statusEl, 'loading', chrome.i18n.getMessage('optionsValidatingDot'));
+    btn.textContent = '⏳ ' + t('optionsValidating');
+    showBadge(statusEl, 'loading', t('optionsValidatingDot'));
 
     try {
         // Temporarily save to validate
         await saveSettings({ githubToken: token });
         const user = await getCurrentUser();
-        showBadge(statusEl, 'success', `✓ ${chrome.i18n.getMessage('optionsConnected', [user.login, user.public_repos.toString()])}`);
+        showBadge(statusEl, 'success', `✓ ${t('optionsConnected', [user.login, user.public_repos.toString()])}`);
     } catch (err) {
-        showBadge(statusEl, 'error', `✕ ${chrome.i18n.getMessage('optionsValidateFailed', [err.message])}`);
+        showBadge(statusEl, 'error', `✕ ${t('optionsValidateFailed', [err.message])}`);
     }
 
     btn.disabled = false;
-    btn.textContent = '🔍 ' + chrome.i18n.getMessage('optionsBtnCheck');
+    btn.textContent = '🔍 ' + t('optionsBtnCheck');
 }
 
 /**
@@ -211,13 +231,13 @@ async function validateAI() {
     const btn = $('#btn-check-ai');
 
     if (!key) {
-        showBadge(statusEl, 'error', chrome.i18n.getMessage('optionsErrorNoAPIKey'));
+        showBadge(statusEl, 'error', t('optionsErrorNoAPIKey'));
         return;
     }
 
     btn.disabled = true;
-    btn.textContent = '⏳ ' + chrome.i18n.getMessage('optionsValidating');
-    showBadge(statusEl, 'loading', chrome.i18n.getMessage('optionsValidatingDot'));
+    btn.textContent = '⏳ ' + t('optionsValidating');
+    showBadge(statusEl, 'loading', t('optionsValidatingDot'));
 
     try {
         if (provider === 'gemini') {
@@ -237,7 +257,7 @@ async function validateAI() {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error?.message || `HTTP ${res.status}`);
             }
-            showBadge(statusEl, 'success', '✓ ' + chrome.i18n.getMessage('optionsGeminiKeyValid'));
+            showBadge(statusEl, 'success', '✓ ' + t('optionsGeminiKeyValid'));
         } else {
             // Test OpenAI-compatible API
             // Auto-complete endpoint FIRST, then read the value
@@ -268,17 +288,17 @@ async function validateAI() {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error?.message || `HTTP ${res.status}`);
             }
-            showBadge(statusEl, 'success', `✓ ${chrome.i18n.getMessage('optionsAPIKeyValidProvider', [provider === 'custom' ? chrome.i18n.getMessage('optionsProviderCustom') : 'OpenAI'])}`);
+            showBadge(statusEl, 'success', `✓ ${t('optionsAPIKeyValidProvider', [provider === 'custom' ? t('optionsProviderCustom') : 'OpenAI'])}`);
 
             // Try to fetch available models to populate the dropdown
             fetchAvailableModels(endpoint, key);
         }
     } catch (err) {
-        showBadge(statusEl, 'error', `✕ ${chrome.i18n.getMessage('optionsValidateFailed', [err.message])}`);
+        showBadge(statusEl, 'error', `✕ ${t('optionsValidateFailed', [err.message])}`);
     }
 
     btn.disabled = false;
-    btn.textContent = '🔍 ' + chrome.i18n.getMessage('optionsBtnCheck');
+    btn.textContent = '🔍 ' + t('optionsBtnCheck');
 }
 
 /**
@@ -288,7 +308,7 @@ async function loadModelsManually() {
     const key = $('#ai-key').value.trim();
     const provider = $('#ai-provider').value;
     if (!key) {
-        showSaveStatus(chrome.i18n.getMessage('optionsErrorNoAPIKey'));
+        showSaveStatus(t('optionsErrorNoAPIKey'));
         return;
     }
     autoCompleteEndpoint();
@@ -306,7 +326,7 @@ async function fetchAvailableModels(chatEndpoint, key) {
     const manualRow = $('#ai-model-manual-row');
     const hint = $('#model-hint');
 
-    hint.textContent = '✅ ' + chrome.i18n.getMessage('optionsLoadingModels');
+    hint.textContent = '✅ ' + t('optionsLoadingModels');
 
     try {
         let modelsEndpoint = chatEndpoint.replace(/\/chat\/completions\/?$/, '/models');
@@ -315,7 +335,7 @@ async function fetchAvailableModels(chatEndpoint, key) {
                 const url = new URL(chatEndpoint);
                 modelsEndpoint = `${url.origin}/v1/models`;
             } catch {
-                hint.textContent = chrome.i18n.getMessage('optionsErrorParseAPI');
+                hint.textContent = t('optionsErrorParseAPI');
                 return;
             }
         }
@@ -325,14 +345,14 @@ async function fetchAvailableModels(chatEndpoint, key) {
         });
 
         if (!res.ok) {
-            hint.textContent = chrome.i18n.getMessage('optionsErrorLoadFail', [res.status.toString()]);
+            hint.textContent = t('optionsErrorLoadFail', [res.status.toString()]);
             return;
         }
 
         const result = await res.json();
         const models = result.data || result.models || [];
         if (!Array.isArray(models) || models.length === 0) {
-            hint.textContent = chrome.i18n.getMessage('optionsErrorNoModelFound');
+            hint.textContent = t('optionsErrorNoModelFound');
             return;
         }
 
@@ -363,7 +383,7 @@ async function fetchAvailableModels(chatEndpoint, key) {
         // Add "manual input" option at the end
         const manualOption = document.createElement('option');
         manualOption.value = '__manual__';
-        manualOption.textContent = '✉️ ' + chrome.i18n.getMessage('optionsManualInput');
+        manualOption.textContent = '✉️ ' + t('optionsManualInput');
         select.appendChild(manualOption);
 
         // Show select, hide manual input
@@ -378,11 +398,11 @@ async function fetchAvailableModels(chatEndpoint, key) {
             $('#ai-model').value = modelIds[0];
         }
 
-        hint.textContent = `✅ ${chrome.i18n.getMessage('optionsLoadedModels', [modelIds.length.toString()])}`;
-        showSaveStatus(chrome.i18n.getMessage('optionsLoadedModels', [modelIds.length.toString()]));
+        hint.textContent = `✅ ${t('optionsLoadedModels', [modelIds.length.toString()])}`;
+        showSaveStatus(t('optionsLoadedModels', [modelIds.length.toString()]));
     } catch (err) {
         console.warn('Failed to fetch models:', err);
-        hint.textContent = chrome.i18n.getMessage('optionsErrorLoadModelMessage', [err.message]);
+        hint.textContent = t('optionsErrorLoadModelMessage', [err.message]);
     }
 }
 
@@ -400,7 +420,7 @@ async function handleSave() {
 
     // Warn if repo name changed
     if (originalRepoName && newRepoName !== originalRepoName) {
-        if (!confirm(chrome.i18n.getMessage('optionsConfirmChangeRepo', [originalRepoName, newRepoName]))) {
+        if (!confirm(t('optionsConfirmChangeRepo', [originalRepoName, newRepoName]))) {
             return;
         }
     }
@@ -416,9 +436,15 @@ async function handleSave() {
         aiCustomEndpoint: $('#ai-endpoint').value.trim(),
         aiCustomModel: $('#ai-model').value.trim(),
         recordHistory: $('#record-history').checked,
+        theme: $('#theme').value,
+        appLanguage: $('#app-language').value,
     };
 
     await saveSettings(settings);
+    await initI18n(settings.appLanguage);
+    applyTheme(settings.theme);
+    localizeHtmlPage();
+    loadSettingsToForm(settings);
     originalRepoName = newRepoName;
 
     // Update alarm interval
@@ -427,7 +453,7 @@ async function handleSave() {
         chrome.alarms.create('auto-sync', { periodInMinutes: settings.syncInterval });
     }
 
-    showSaveStatus(chrome.i18n.getMessage('optionsSavedSettings') + ' ✓');
+    showSaveStatus(t('optionsSavedSettings') + ' ✓');
 }
 
 function showSaveStatus(text) {
@@ -441,9 +467,9 @@ async function handleExportMarkdown() {
     try {
         const markdown = await exportToMarkdown();
         downloadFile('github-stars.md', markdown, 'text/markdown');
-        showSaveStatus(chrome.i18n.getMessage('optionsExportedMarkdown'));
+        showSaveStatus(t('optionsExportedMarkdown'));
     } catch (err) {
-        showSaveStatus(chrome.i18n.getMessage('optionsExportFailed', [err.message]));
+        showSaveStatus(t('optionsExportFailed', [err.message]));
     }
 }
 
@@ -451,9 +477,9 @@ async function handleExportJSON() {
     try {
         const data = await exportAllData();
         downloadFile('github-stars-data.json', JSON.stringify(data, null, 2), 'application/json');
-        showSaveStatus(chrome.i18n.getMessage('optionsExportedJSON'));
+        showSaveStatus(t('optionsExportedJSON'));
     } catch (err) {
-        showSaveStatus(chrome.i18n.getMessage('optionsExportFailed', [err.message]));
+        showSaveStatus(t('optionsExportFailed', [err.message]));
     }
 }
 

@@ -26,7 +26,12 @@ A Chrome extension designed for developers to efficiently manage, categorize, an
 
 ### ⚙️ Configuration
 
-1. **GitHub Token**: For the first use, you need to create a Personal Access Token (requires `repo` and `gist` permissions).
+1. **GitHub Token**: Create a Personal Access Token and paste it into the extension settings.
+   - **Public stars only**: a token with basic authenticated GitHub API access is enough to read your public starred repositories.
+   - **Private starred repositories**: the token must be allowed to read private repositories. With a classic Personal Access Token, use the `repo` scope.
+   - **Cloud sync**: the extension writes `data.json`, `README.md`, and optionally `HISTORY.md` to your sync repository. If you use the default private sync repository, the token must be able to create and write private repositories. With a classic Personal Access Token, use the `repo` scope.
+   - **Gist**: not required by the current extension code.
+   - Keep this token private. It is stored locally in Chrome extension storage and used only for GitHub API requests.
 2. **AI Configuration (Optional)**:
    - Supports Google Gemini API (Recommended).
    - Supports OpenAI or other custom API endpoints compatible with the OpenAI format.

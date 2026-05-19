@@ -15,7 +15,7 @@
     color: #6366f1 !important;
     cursor: pointer !important;
     transition: all 0.15s ease !important;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif !important;
 }
 
 .gsm-note-btn:hover {
@@ -99,11 +99,11 @@
 
 @media (prefers-color-scheme: dark) {
     .gsm-widget-note {
-        color: #8b949e !important;
+        color: #909dab !important;
     }
 
     .gsm-widget-note.gsm-has-content {
-        color: #e6edf3 !important;
+        color: #adbac7 !important;
     }
 }
 
@@ -164,16 +164,16 @@
 
 @media (prefers-color-scheme: dark) {
     .gsm-panel-overlay {
-        background: rgba(0, 0, 0, 0.5) !important;
+        background: rgba(34, 39, 46, 0.55) !important;
     }
 }
 
 .gsm-panel-content {
     position: relative !important;
-    width: 420px !important;
+    width: min(400px, calc(100vw - 32px)) !important;
     max-height: 80vh !important;
     overflow-y: auto !important;
-    background: #ffffff !important;
+    background: #f6f8fa !important;
     border: 1px solid #d1d9e0 !important;
     border-radius: 10px !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
@@ -182,9 +182,9 @@
 
 @media (prefers-color-scheme: dark) {
     .gsm-panel-content {
-        background: #161b22 !important;
-        border-color: #30363d !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+        background: #2d333b !important;
+        border-color: #444c56 !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32) !important;
     }
 }
 
@@ -210,7 +210,7 @@
 
 @media (prefers-color-scheme: dark) {
     .gsm-panel-header {
-        border-color: #21262d !important;
+        border-color: #373e47 !important;
     }
 }
 
@@ -223,7 +223,7 @@
 
 @media (prefers-color-scheme: dark) {
     .gsm-panel-header h3 {
-        color: #58a6ff !important;
+        color: #539bf5 !important;
     }
 }
 
@@ -246,12 +246,12 @@
 
 @media (prefers-color-scheme: dark) {
     .gsm-panel-close {
-        color: #8b949e !important;
+        color: #909dab !important;
     }
 
     .gsm-panel-close:hover {
-        background: #21262d !important;
-        color: #e6edf3 !important;
+        background: #373e47 !important;
+        color: #adbac7 !important;
     }
 }
 
@@ -271,7 +271,7 @@
 
 @media (prefers-color-scheme: dark) {
     .gsm-panel-footer {
-        border-color: #21262d !important;
+        border-color: #373e47 !important;
     }
 }
 
@@ -290,7 +290,7 @@
 
 @media (prefers-color-scheme: dark) {
     .gsm-field label {
-        color: #e6edf3 !important;
+        color: #adbac7 !important;
     }
 }
 
@@ -303,7 +303,7 @@
     border: 1px solid #d1d9e0 !important;
     border-radius: 6px !important;
     outline: none !important;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif !important;
     transition: border-color 0.12s !important;
     box-sizing: border-box !important;
 }
@@ -319,16 +319,20 @@
 }
 
 @media (prefers-color-scheme: dark) {
+    .gsm-input::placeholder {
+        color: #768390 !important;
+    }
+
     .gsm-input {
-        color: #e6edf3 !important;
-        background: #0d1117 !important;
-        border-color: #30363d !important;
+        color: #adbac7 !important;
+        background: #22272e !important;
+        border-color: #444c56 !important;
     }
 
     .gsm-input:focus {
-        border-color: #8ab4f8 !important;
-        background: #0d1117 !important;
-        box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.15) !important;
+        border-color: #539bf5 !important;
+        background: #22272e !important;
+        box-shadow: 0 0 0 3px rgba(83, 155, 245, 0.18) !important;
     }
 }
 
@@ -368,7 +372,7 @@ textarea.gsm-input {
     color: #1f2328 !important;
     cursor: pointer !important;
     transition: all 0.12s !important;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif !important;
     white-space: nowrap !important;
     line-height: 20px !important;
 }
@@ -380,14 +384,14 @@ textarea.gsm-input {
 
 @media (prefers-color-scheme: dark) {
     .gsm-btn {
-        border-color: #30363d !important;
-        background: #21262d !important;
-        color: #e6edf3 !important;
+        border-color: #444c56 !important;
+        background: #373e47 !important;
+        color: #adbac7 !important;
     }
 
     .gsm-btn:hover {
-        background: #30363d !important;
-        border-color: #6e7681 !important;
+        background: #444c56 !important;
+        border-color: #768390 !important;
     }
 }
 
@@ -404,14 +408,14 @@ textarea.gsm-input {
 
 @media (prefers-color-scheme: dark) {
     .gsm-btn-primary {
-        background: #8ab4f8 !important;
-        border-color: #8ab4f8 !important;
-        color: #202124 !important;
+        background: #539bf5 !important;
+        border-color: #539bf5 !important;
+        color: #ffffff !important;
     }
 
     .gsm-btn-primary:hover {
-        background: #aecbfa !important;
-        border-color: #aecbfa !important;
+        background: #6cb6ff !important;
+        border-color: #6cb6ff !important;
     }
 }
 
@@ -432,13 +436,13 @@ textarea.gsm-input {
 
 @media (prefers-color-scheme: dark) {
     .gsm-ai-result {
-        background: #0d1117 !important;
-        border-color: #30363d !important;
-        color: #8b949e !important;
+        background: #22272e !important;
+        border-color: #444c56 !important;
+        color: #909dab !important;
     }
 
     .gsm-ai-result.gsm-has-content {
-        color: #e6edf3 !important;
+        color: #adbac7 !important;
     }
 }
 
@@ -447,4 +451,225 @@ textarea.gsm-input {
     color: #8b949e !important;
     font-size: 11px !important;
     font-style: italic !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    .gsm-placeholder {
+        color: #768390 !important;
+    }
+}
+
+/* ===== Explicit Theme Overrides ===== */
+html[data-gsm-theme='light'] .gsm-note-btn {
+    border-color: rgba(99, 102, 241, 0.3) !important;
+    background: rgba(99, 102, 241, 0.08) !important;
+    color: #6366f1 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-note-btn:hover {
+    background: rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.5) !important;
+}
+
+html[data-gsm-theme='light'] .gsm-widget {
+    background: rgba(99, 102, 241, 0.04) !important;
+    border-color: rgba(99, 102, 241, 0.15) !important;
+}
+
+html[data-gsm-theme='light'] .gsm-widget-header {
+    color: #6366f1 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-widget-note {
+    color: #656d76 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-widget-note.gsm-has-content,
+html[data-gsm-theme='light'] .gsm-field label,
+html[data-gsm-theme='light'] .gsm-ai-result.gsm-has-content {
+    color: #1f2328 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-tag {
+    background: #fbefff !important;
+    color: #8250df !important;
+}
+
+html[data-gsm-theme='light'] .gsm-panel-overlay {
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+
+html[data-gsm-theme='light'] .gsm-panel-content {
+    background: #f6f8fa !important;
+    border-color: #d1d9e0 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+html[data-gsm-theme='light'] .gsm-panel-header,
+html[data-gsm-theme='light'] .gsm-panel-footer {
+    border-color: #d1d9e0 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-panel-header h3 {
+    color: #0969da !important;
+}
+
+html[data-gsm-theme='light'] .gsm-panel-close {
+    color: #656d76 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-panel-close:hover {
+    background: #eaeef2 !important;
+    color: #1f2328 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-input {
+    color: #1f2328 !important;
+    background: #f6f8fa !important;
+    border-color: #d1d9e0 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-input:focus {
+    border-color: #1a73e8 !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12) !important;
+}
+
+html[data-gsm-theme='light'] .gsm-input::placeholder,
+html[data-gsm-theme='light'] .gsm-placeholder {
+    color: #8b949e !important;
+}
+
+html[data-gsm-theme='light'] .gsm-btn {
+    border-color: #d1d9e0 !important;
+    background: #f6f8fa !important;
+    color: #1f2328 !important;
+}
+
+html[data-gsm-theme='light'] .gsm-btn:hover {
+    background: #eaeef2 !important;
+    border-color: #8b949e !important;
+}
+
+html[data-gsm-theme='light'] .gsm-btn-primary {
+    background: #1a73e8 !important;
+    border-color: #1a73e8 !important;
+    color: #ffffff !important;
+}
+
+html[data-gsm-theme='light'] .gsm-btn-primary:hover {
+    background: #1765cc !important;
+    border-color: #1765cc !important;
+}
+
+html[data-gsm-theme='light'] .gsm-ai-result {
+    background: #f6f8fa !important;
+    border-color: #d1d9e0 !important;
+    color: #656d76 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-widget-note,
+html[data-gsm-theme='dark'] .gsm-panel-close,
+html[data-gsm-theme='dark'] .gsm-ai-result {
+    color: #909dab !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-note-btn {
+    border-color: rgba(129, 140, 248, 0.35) !important;
+    background: rgba(129, 140, 248, 0.1) !important;
+    color: #818cf8 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-note-btn:hover {
+    background: rgba(129, 140, 248, 0.2) !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-widget {
+    background: rgba(129, 140, 248, 0.06) !important;
+    border-color: rgba(129, 140, 248, 0.2) !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-widget-header {
+    color: #818cf8 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-tag {
+    background: rgba(163, 113, 247, 0.15) !important;
+    color: #a371f7 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-widget-note.gsm-has-content,
+html[data-gsm-theme='dark'] .gsm-field label,
+html[data-gsm-theme='dark'] .gsm-ai-result.gsm-has-content {
+    color: #adbac7 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-panel-overlay {
+    background: rgba(34, 39, 46, 0.55) !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-panel-content {
+    background: #2d333b !important;
+    border-color: #444c56 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32) !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-panel-header,
+html[data-gsm-theme='dark'] .gsm-panel-footer {
+    border-color: #373e47 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-panel-header h3 {
+    color: #539bf5 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-panel-close:hover,
+html[data-gsm-theme='dark'] .gsm-btn {
+    background: #373e47 !important;
+    color: #adbac7 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-panel-close:hover {
+    color: #adbac7 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-input,
+html[data-gsm-theme='dark'] .gsm-ai-result {
+    background: #22272e !important;
+    border-color: #444c56 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-input {
+    color: #adbac7 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-input:focus {
+    border-color: #539bf5 !important;
+    background: #22272e !important;
+    box-shadow: 0 0 0 3px rgba(83, 155, 245, 0.18) !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-input::placeholder,
+html[data-gsm-theme='dark'] .gsm-placeholder {
+    color: #768390 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-btn {
+    border-color: #444c56 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-btn:hover {
+    background: #444c56 !important;
+    border-color: #768390 !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-btn-primary {
+    background: #539bf5 !important;
+    border-color: #539bf5 !important;
+    color: #ffffff !important;
+}
+
+html[data-gsm-theme='dark'] .gsm-btn-primary:hover {
+    background: #6cb6ff !important;
+    border-color: #6cb6ff !important;
 }

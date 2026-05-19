@@ -4,7 +4,9 @@ import { getSettings, saveSettings, getStarsData, saveStarData, getTags, saveTag
 import { getAllStarredRepos, getRepoReadme } from '../lib/github-api.js';
 import { generateSummary, isAIConfigured } from '../lib/ai-summary.js';
 import { syncToGitHub } from '../lib/sync.js';
-import { timeAgo, formatCount, getTagColor, debounce, getLangColor, truncateText } from '../lib/utils.js';
+import { applyTheme } from '../lib/theme.js';
+import { timeAgo, formatCount, getTagColor, getLangColor, truncateText } from '../lib/utils.js';
+import { initI18n, localizeDocument, t } from '../lib/i18n.js';
 
 // ===== State =====
 let allStars = [];        // Array of repo info from GitHub API
@@ -14,15 +16,81 @@ let historyData = [];
 let activeTagFilter = null;
 let currentEditRepo = null;
 let currentAIController = null; // AbortController for in-flight AI request
+let currentTheme = 'system';
 
 // ===== DOM References =====
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
+function isImeComposing(event) {
+    return event.isComposing || event.keyCode === 229 || event.key === 'Process';
+}
+
+const SEARCH_ALIASES = {
+    ai: ['artificial intelligence', 'llm', 'gpt'],
+    cpp: ['c++', 'cplusplus', 'c plus plus'],
+    cs: ['c#', 'csharp', 'c sharp'],
+    go: ['golang'],
+    js: ['javascript', 'node', 'nodejs', 'node.js'],
+    k8s: ['kubernetes'],
+    ml: ['machine learning'],
+    next: ['nextjs', 'next.js'],
+    node: ['nodejs', 'node.js'],
+    postgres: ['postgresql'],
+    py: ['python'],
+    rb: ['ruby'],
+    rs: ['rust'],
+    sh: ['shell', 'bash'],
+    ts: ['typescript'],
+    vue: ['vuejs', 'vue.js'],
+};
+
+function normalizeSearchText(value) {
+    return String(value ?? '')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[_./-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function getSearchTokens(query) {
+    return normalizeSearchText(query).split(' ').filter(Boolean);
+}
+
+function expandSearchToken(token) {
+    return [token, ...(SEARCH_ALIASES[token] || [])].map(normalizeSearchText);
+}
+
+function buildSearchTarget(parts) {
+    const normalized = normalizeSearchText(parts.flat().filter(Boolean).join(' '));
+    return {
+        normalized,
+        compact: normalized.replace(/\s+/g, ''),
+    };
+}
+
+function searchTargetMatches(target, query) {
+    const tokens = getSearchTokens(query);
+    if (tokens.length === 0) return true;
+
+    return tokens.every(token => {
+        return expandSearchToken(token).some(alias => {
+            const compactAlias = alias.replace(/\s+/g, '');
+            return target.normalized.includes(alias) || target.compact.includes(compactAlias);
+        });
+    });
+}
+
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', async () => {
-    localizeHtmlPage();
     const settings = await getSettings();
+    await initI18n(settings.appLanguage);
+    currentTheme = settings.theme || 'system';
+    applyTheme(currentTheme);
+    localizeHtmlPage();
+    updateThemeButton();
 
     bindEvents();
 
@@ -36,15 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // ===== Localization =====
 function localizeHtmlPage() {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        el.textContent = chrome.i18n.getMessage(el.getAttribute('data-i18n'));
-    });
-    document.querySelectorAll('[data-i18n-title]').forEach(el => {
-        el.title = chrome.i18n.getMessage(el.getAttribute('data-i18n-title'));
-    });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        el.placeholder = chrome.i18n.getMessage(el.getAttribute('data-i18n-placeholder'));
-    });
+    localizeDocument();
 }
 
 
@@ -59,6 +119,35 @@ function showMainContent() {
     $('#main-content').classList.remove('hidden');
 }
 
+function getThemeLabel(theme) {
+    const labels = {
+        system: t('popupThemeSystem'),
+        light: t('popupThemeLight'),
+        dark: t('popupThemeDark'),
+    };
+    return labels[theme] || labels.system;
+}
+
+function getNextTheme(theme) {
+    if (theme === 'system') return 'light';
+    if (theme === 'light') return 'dark';
+    return 'system';
+}
+
+function updateThemeButton() {
+    const btn = $('#btn-theme');
+    if (!btn) return;
+    btn.title = t('popupBtnThemeCurrent', [getThemeLabel(currentTheme)]);
+}
+
+async function handleThemeToggle() {
+    currentTheme = getNextTheme(currentTheme);
+    applyTheme(currentTheme);
+    updateThemeButton();
+    await saveSettings({ theme: currentTheme });
+    setStatus(t('msgThemeSwitched', [getThemeLabel(currentTheme)]));
+}
+
 // ===== Event Binding =====
 function bindEvents() {
     // Setup
@@ -71,6 +160,7 @@ function bindEvents() {
     });
 
     $('#setup-token').addEventListener('keydown', (e) => {
+        if (isImeComposing(e)) return;
         if (e.key === 'Enter') {
             $('#setup-submit').click();
         }
@@ -90,12 +180,12 @@ function bindEvents() {
             if (tabName === 'stars') {
                 $('.search-bar').classList.remove('hidden');
                 $('#tag-filter-bar').classList.remove('hidden');
-                searchInput.placeholder = chrome.i18n.getMessage('popupSearchPlaceholder');
+                searchInput.placeholder = t('popupSearchPlaceholder');
                 searchInput.value = '';
             } else if (tabName === 'history') {
                 $('.search-bar').classList.remove('hidden');
                 $('#tag-filter-bar').classList.add('hidden');
-                searchInput.placeholder = chrome.i18n.getMessage('popupHistorySearchPlaceholder');
+                searchInput.placeholder = t('popupHistorySearchPlaceholder');
                 searchInput.value = '';
             } else {
                 $('.search-bar').classList.add('hidden');
@@ -108,18 +198,53 @@ function bindEvents() {
         });
     });
 
-    // Search
-    $('#search-input').addEventListener('input', debounce((e) => {
+    // Search: debounce regular typing, and wait until IME composition ends before filtering.
+    const searchInput = $('#search-input');
+    let searchIsComposing = false;
+    let pendingSearchQuery = searchInput.value;
+    let searchTimer = null;
+
+    function applySearch() {
         const activeTab = document.querySelector('.tab.active').dataset.tab;
         if (activeTab === 'stars') {
-            renderStars(e.target.value);
+            renderStars(pendingSearchQuery);
         } else if (activeTab === 'history') {
-            renderHistory(e.target.value);
+            renderHistory(pendingSearchQuery);
         }
-    }, 200));
+    }
+
+    function scheduleSearch() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(applySearch, 120);
+    }
+
+    searchInput.addEventListener('compositionstart', () => {
+        searchIsComposing = true;
+    });
+
+    searchInput.addEventListener('compositionend', (e) => {
+        searchIsComposing = false;
+        pendingSearchQuery = e.target.value;
+        scheduleSearch();
+    });
+
+    searchInput.addEventListener('input', (e) => {
+        pendingSearchQuery = e.target.value;
+        if (!searchIsComposing) {
+            scheduleSearch();
+        }
+    });
+
+    searchInput.addEventListener('change', () => {
+        if (searchIsComposing) return;
+        applySearch();
+    });
 
     // Sync
     $('#btn-sync').addEventListener('click', handleSync);
+
+    // Theme
+    $('#btn-theme').addEventListener('click', handleThemeToggle);
 
     // Settings
     $('#btn-settings').addEventListener('click', () => {
@@ -133,6 +258,7 @@ function bindEvents() {
     $('#modal-ai-btn').addEventListener('click', handleAISummary);
     $('#modal-tag-add-btn').addEventListener('click', handleModalAddTag);
     $('#modal-tag-input').addEventListener('keydown', (e) => {
+        if (isImeComposing(e)) return;
         const list = $('#modal-tag-autocomplete');
         if (e.key === 'Enter' && !list.classList.contains('hidden') && list.querySelector('.selected')) {
             return;
@@ -143,6 +269,7 @@ function bindEvents() {
     // Tag Manager
     $('#btn-add-tag').addEventListener('click', handleAddTag);
     $('#new-tag-input').addEventListener('keydown', (e) => {
+        if (isImeComposing(e)) return;
         // If the autocomplete dropdown is visible and an item is selected, let it handle the enter key first.
         const list = $('#new-tag-autocomplete');
         if (e.key === 'Enter' && !list.classList.contains('hidden') && list.querySelector('.selected')) {
@@ -166,13 +293,15 @@ function setupAutocomplete(inputId, listId, getExistingTags) {
     let selectedIndex = -1;
 
     function renderList() {
-        const query = input.value.trim().toLowerCase();
+        const query = input.value.trim();
         const existingTags = getExistingTags ? getExistingTags() : [];
         const availableTags = allTags.filter(t => !existingTags.includes(t));
 
         let matches = availableTags;
         if (query) {
-            matches = availableTags.filter(t => t.toLowerCase().includes(query));
+            matches = availableTags.filter(t => {
+                return searchTargetMatches(buildSearchTarget([t]), query);
+            });
         }
 
         if (matches.length === 0) {
@@ -202,6 +331,7 @@ function setupAutocomplete(inputId, listId, getExistingTags) {
     });
 
     input.addEventListener('keydown', (e) => {
+        if (isImeComposing(e)) return;
         if (list.classList.contains('hidden')) return;
 
         const itemsCount = list.children.length;
@@ -241,7 +371,7 @@ function setupAutocomplete(inputId, listId, getExistingTags) {
 
 // ===== Data Loading =====
 async function loadData() {
-    setStatus(chrome.i18n.getMessage('msgLoadingCache'));
+    setStatus(t('msgLoadingCache'));
 
     try {
         // Load local data first
@@ -262,15 +392,15 @@ async function loadData() {
         if (allStars && allStars.length > 0) {
             renderStars();
             renderTagFilterBar();
-            setStatus(chrome.i18n.getMessage('msgLoadedCache', [allStars.length.toString()]));
+            setStatus(t('msgLoadedCache', [allStars.length.toString()]));
             $('#stars-stats').classList.remove('hidden');
-            $('#stars-stats').textContent = chrome.i18n.getMessage('msgStarsStats', [allStars.length.toString(), allTags.length.toString()]);
+            $('#stars-stats').textContent = t('msgStarsStats', [allStars.length.toString(), allTags.length.toString()]);
         }
 
         // Fetch stars from GitHub API in the background
         const freshStars = await getAllStarredRepos((count) => {
             if (!allStars || allStars.length === 0) {
-                setStatus(chrome.i18n.getMessage('msgFirstLoad', [count.toString()]));
+                setStatus(t('msgFirstLoad', [count.toString()]));
             }
         });
 
@@ -293,11 +423,11 @@ async function loadData() {
         renderStars($('#search-input').value);
         renderTagFilterBar();
 
-        setStatus(chrome.i18n.getMessage('msgSyncDone', [allStars.length.toString()]));
+        setStatus(t('msgSyncDone', [allStars.length.toString()]));
         $('#stars-stats').classList.remove('hidden');
-        $('#stars-stats').textContent = chrome.i18n.getMessage('msgStarsStats', [allStars.length.toString(), allTags.length.toString()]);
+        $('#stars-stats').textContent = t('msgStarsStats', [allStars.length.toString(), allTags.length.toString()]);
     } catch (err) {
-        setStatus(chrome.i18n.getMessage('msgError', [err.message]));
+        setStatus(t('msgError', [err.message]));
         if (!allStars || allStars.length === 0) {
             $('#stars-list').innerHTML = `
         <div class="empty-state">
@@ -311,7 +441,7 @@ async function loadData() {
 // ===== Render Stars =====
 function renderStars(searchQuery = '') {
     const list = $('#stars-list');
-    const query = searchQuery.toLowerCase().trim();
+    const query = searchQuery.trim();
 
     let filtered = allStars;
 
@@ -319,11 +449,20 @@ function renderStars(searchQuery = '') {
     if (query) {
         filtered = filtered.filter(star => {
             const data = starsData[star.fullName] || {};
-            return star.fullName.toLowerCase().includes(query) ||
-                (star.description || '').toLowerCase().includes(query) ||
-                (data.note || '').toLowerCase().includes(query) ||
-                (data.aiSummary || '').toLowerCase().includes(query) ||
-                (star.topics || []).some(t => t.includes(query));
+            const searchTarget = buildSearchTarget([
+                star.fullName,
+                star.name,
+                star.owner,
+                star.description,
+                star.language,
+                star.homepage,
+                star.license,
+                star.topics || [],
+                data.tags || [],
+                data.note,
+                data.aiSummary,
+            ]);
+            return searchTargetMatches(searchTarget, query);
         });
     }
 
@@ -339,7 +478,7 @@ function renderStars(searchQuery = '') {
         list.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🔍</div>
-        <p class="empty-state-text">${query ? chrome.i18n.getMessage('msgNoSearchMatch') : chrome.i18n.getMessage('msgNoStars')}</p>
+        <p class="empty-state-text">${query ? t('msgNoSearchMatch') : t('msgNoStars')}</p>
       </div>`;
         return;
     }
@@ -355,19 +494,19 @@ function renderStars(searchQuery = '') {
         <div class="star-info">
           <div class="star-name">
             <a href="${star.url}" target="_blank" title="${star.fullName}">${star.fullName}</a>
-            ${star.isArchived ? `<span class="tag tag-orange" style="font-size:9px">${chrome.i18n.getMessage('msgArchived')}</span>` : ''}
+            ${star.isArchived ? `<span class="tag tag-orange" style="font-size:9px">${t('msgArchived')}</span>` : ''}
           </div>
           <div class="star-desc">${star.description || ''}</div>
           ${notePreview ? `<div class="star-note-preview">${data.note ? '📝' : '🤖'} ${truncateText(notePreview, 60)}</div>` : ''}
           <div class="star-meta">
             ${star.language ? `<span class="star-lang"><span class="lang-dot" style="background:${getLangColor(star.language)}"></span>${star.language}</span>` : ''}
             <span>⭐ ${formatCount(star.stars)}</span>
-            <span>${timeAgo(star.starredAt)}</span>
+            <span>${timeAgo(star.starredAt, t)}</span>
           </div>
           ${tags.length > 0 ? `<div class="star-tags">${tags.map(t => `<span class="tag ${getTagColor(t)}" style="font-size:10px">${t}</span>`).join('')}</div>` : ''}
         </div>
         <div class="star-actions">
-          <button class="star-edit-btn" data-repo="${star.fullName}" title="${chrome.i18n.getMessage('msgEditNoteTags')}">📝</button>
+          <button class="star-edit-btn" data-repo="${star.fullName}" title="${t('msgEditNoteTags')}">📝</button>
         </div>
       </div>`;
     }).join('');
@@ -408,7 +547,7 @@ function renderTagFilterBar() {
     }
 
     bar.innerHTML = `
-    <span class="tag tag-filter ${!activeTagFilter ? 'active' : ''}" data-tag="">${chrome.i18n.getMessage('msgFilterAll')}</span>
+    <span class="tag tag-filter ${!activeTagFilter ? 'active' : ''}" data-tag="">${t('msgFilterAll')}</span>
     ${allTags.map(t => `<span class="tag tag-filter ${getTagColor(t)} ${activeTagFilter === t ? 'active' : ''}" data-tag="${t}">${t} (${tagCounts[t] || 0})</span>`).join('')}
   `;
 
@@ -424,23 +563,26 @@ function renderTagFilterBar() {
 // ===== Render History =====
 function renderHistory(searchQuery = '') {
     const list = $('#history-list');
-    const query = searchQuery.toLowerCase().trim();
+    const query = searchQuery.trim();
 
     let filtered = historyData;
     if (query) {
-        filtered = filtered.filter(entry =>
-            entry.repo.toLowerCase().includes(query) ||
-            (entry.title || '').toLowerCase().includes(query) ||
-            (entry.description || '').toLowerCase().includes(query)
-        );
+        filtered = filtered.filter(entry => {
+            const searchTarget = buildSearchTarget([
+                entry.repo,
+                entry.title,
+                entry.description,
+            ]);
+            return searchTargetMatches(searchTarget, query);
+        });
     }
 
     if (filtered.length === 0) {
         list.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">📅</div>
-        <p class="empty-state-text">${query ? chrome.i18n.getMessage('msgNoSearchMatch') : chrome.i18n.getMessage('popupEmptyHistory')}</p>
-        ${!query ? `<p class="text-xs text-secondary" style="margin-top:8px">${chrome.i18n.getMessage('popupEmptyHistoryDesc')}</p>` : ''}
+        <p class="empty-state-text">${query ? t('msgNoSearchMatch') : t('popupEmptyHistory')}</p>
+        ${!query ? `<p class="text-xs text-secondary" style="margin-top:8px">${t('popupEmptyHistoryDesc')}</p>` : ''}
       </div>`;
         return;
     }
@@ -448,7 +590,7 @@ function renderHistory(searchQuery = '') {
     // Group by date
     const byDate = {};
     for (const entry of filtered) {
-        const date = new Date(entry.visitedAt).toLocaleDateString('zh-CN');
+        const date = new Date(entry.visitedAt).toLocaleDateString(document.documentElement.lang);
         if (!byDate[date]) byDate[date] = [];
         byDate[date].push(entry);
     }
@@ -457,7 +599,7 @@ function renderHistory(searchQuery = '') {
     for (const [date, entries] of Object.entries(byDate)) {
         html += `<div class="history-date">${date}</div>`;
         for (const entry of entries) {
-            const time = new Date(entry.visitedAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            const time = new Date(entry.visitedAt).toLocaleTimeString(document.documentElement.lang, { hour: '2-digit', minute: '2-digit' });
             html += `
         <div class="history-item">
           <span class="history-time">${time}</span>
@@ -481,21 +623,21 @@ function renderTagManager() {
     }
 
     if (allTags.length === 0) {
-        list.innerHTML = `<p class="text-secondary text-sm">${chrome.i18n.getMessage('msgNoTags')}</p>`;
+        list.innerHTML = `<p class="text-secondary text-sm">${t('msgNoTags')}</p>`;
         return;
     }
 
-    list.innerHTML = allTags.map(t => `
+    list.innerHTML = allTags.map(tag => `
     <div class="tag-item">
-      <span class="tag ${getTagColor(t)}">${t}</span>
-      <span class="tag-count">${tagCounts[t] || 0}</span>
-      <span class="tag-delete" data-tag="${t}" title="${chrome.i18n.getMessage('popupBtnDeleteTag')}">✕</span>
+      <span class="tag ${getTagColor(tag)}">${tag}</span>
+      <span class="tag-count">${tagCounts[tag] || 0}</span>
+      <span class="tag-delete" data-tag="${tag}" title="${t('popupBtnDeleteTag')}">✕</span>
     </div>
   `).join('');
 
     list.querySelectorAll('.tag-delete').forEach(el => {
         el.addEventListener('click', async () => {
-            if (confirm(chrome.i18n.getMessage('msgConfirmDeleteTag', [el.dataset.tag]))) {
+            if (confirm(t('msgConfirmDeleteTag', [el.dataset.tag]))) {
                 await removeTag(el.dataset.tag);
                 allTags = await getTags();
                 starsData = await getStarsData();
@@ -527,7 +669,7 @@ function openModal(fullName) {
     $('#modal-note').value = data.note || '';
     $('#modal-ai-summary').innerHTML = data.aiSummary
         ? `<span style="color:var(--text-primary)">${data.aiSummary}</span>`
-        : `<span class="text-secondary text-sm">${chrome.i18n.getMessage('popupModalAIPromptFull')}</span>`;
+        : `<span class="text-secondary text-sm">${t('popupModalAIPromptFull')}</span>`;
 
     renderModalTags(data.tags || []);
     $('#note-modal').classList.remove('hidden');
@@ -542,7 +684,7 @@ function closeModal() {
     // Reset AI button state in case it was stuck
     const btn = $('#modal-ai-btn');
     btn.disabled = false;
-    btn.textContent = chrome.i18n.getMessage('popupModalAIBtn');
+    btn.textContent = t('popupModalAIBtn');
 
     $('#note-modal').classList.add('hidden');
     currentEditRepo = null;
@@ -555,7 +697,7 @@ function renderModalTags(tags) {
             ${t}
             <span class="tag-remove" data-tag="${t}">✕</span>
         </span>
-    `).join('') || `<span class="text-secondary text-xs">${chrome.i18n.getMessage('msgEmptyTags')}</span>`;
+    `).join('') || `<span class="text-secondary text-xs">${t('msgEmptyTags')}</span>`;
 
     container.querySelectorAll('.tag-remove').forEach(el => {
         el.addEventListener('click', async () => {
@@ -599,7 +741,7 @@ async function handleModalSave() {
     starsData = await getStarsData();
     renderStars($('#search-input').value);
     closeModal();
-    setStatus(chrome.i18n.getMessage('msgSaved'));
+    setStatus(t('msgSaved'));
 }
 
 async function handleAISummary() {
@@ -609,7 +751,7 @@ async function handleAISummary() {
     const configured = await isAIConfigured();
     if (!configured) {
         const summaryBox = $('#modal-ai-summary');
-        summaryBox.innerHTML = `<span style="color:var(--color-danger)">${chrome.i18n.getMessage('msgAIConfigWarning')} <a href="#" id="go-settings-link" style="color:var(--color-accent);text-decoration:underline;margin:0 4px;">${chrome.i18n.getMessage('msgSettingsInMessage')}</a></span>`;
+        summaryBox.innerHTML = `<span style="color:var(--color-danger)">${t('msgAIConfigWarning')} <a href="#" id="go-settings-link" style="color:var(--color-accent);text-decoration:underline;margin:0 4px;">${t('msgSettingsInMessage')}</a></span>`;
         document.getElementById('go-settings-link')?.addEventListener('click', (e) => {
             e.preventDefault();
             chrome.runtime.openOptionsPage();
@@ -628,7 +770,7 @@ async function handleAISummary() {
     const btn = $('#modal-ai-btn');
     const summaryBox = $('#modal-ai-summary');
     btn.disabled = true;
-    btn.textContent = chrome.i18n.getMessage('msgAIGenerating');
+    btn.textContent = t('msgAIGenerating');
     summaryBox.innerHTML = '<div class="spinner" style="width:16px;height:16px;"></div>';
 
     try {
@@ -678,7 +820,7 @@ async function handleAISummary() {
     } finally {
         if (!signal.aborted) {
             btn.disabled = false;
-            btn.textContent = chrome.i18n.getMessage('popupModalAIBtn');
+            btn.textContent = t('popupModalAIBtn');
             currentAIController = null;
         }
     }
@@ -689,14 +831,14 @@ async function handleSync() {
     const btn = $('#btn-sync');
     btn.classList.add('syncing');
     btn.disabled = true;
-    setStatus(chrome.i18n.getMessage('msgSyncing'));
+    setStatus(t('msgSyncing'));
 
     try {
         await syncToGitHub();
-        setStatus(chrome.i18n.getMessage('msgSyncComplete'));
-        setSyncStatus(chrome.i18n.getMessage('msgLastSync', [new Date().toLocaleTimeString(chrome.i18n.getUILanguage())]));
+        setStatus(t('msgSyncComplete'));
+        setSyncStatus(t('msgLastSync', [new Date().toLocaleTimeString(document.documentElement.lang)]));
     } catch (err) {
-        setStatus(chrome.i18n.getMessage('msgError', [err.message]));
+        setStatus(t('msgError', [err.message]));
     }
 
     btn.classList.remove('syncing');

@@ -11,6 +11,26 @@
     "popupBtnSync": {
         "message": "同步数据"
     },
+    "popupBtnTheme": {
+        "message": "切换主题"
+    },
+    "popupBtnThemeCurrent": {
+        "message": "切换主题：当前为 $THEME$",
+        "placeholders": {
+            "theme": {
+                "content": "$1"
+            }
+        }
+    },
+    "popupThemeSystem": {
+        "message": "跟随系统"
+    },
+    "popupThemeLight": {
+        "message": "白天模式"
+    },
+    "popupThemeDark": {
+        "message": "黑夜模式"
+    },
     "popupBtnSettings": {
         "message": "设置"
     },
@@ -27,7 +47,7 @@
         "message": "开始使用"
     },
     "popupSetupHelpPrefix": {
-        "message": "需要 repo + gist 权限 · "
+        "message": "私有仓库和云同步需要 repo 权限 · "
     },
     "popupSetupHelpLink": {
         "message": "创建 Token →"
@@ -161,6 +181,14 @@
     "msgSaved": {
         "message": "已保存"
     },
+    "msgThemeSwitched": {
+        "message": "已切换到 $THEME$",
+        "placeholders": {
+            "theme": {
+                "content": "$1"
+            }
+        }
+    },
     "msgAIConfigWarning": {
         "message": "⚠️ 请先在"
     },
@@ -215,7 +243,7 @@
         "message": "🔍 验证"
     },
     "optionsTokenHintContent": {
-        "message": "需要 repo + gist 权限。"
+        "message": "私有仓库和云同步需要 repo 权限。"
     },
     "optionsTokenHintLink": {
         "message": "创建 Token →"
@@ -300,6 +328,39 @@
     },
     "optionsAIModelHint": {
         "message": "点击验证按钮后会自动加载可用模型"
+    },
+    "optionsSectionAppearance": {
+        "message": "🎨 外观"
+    },
+    "optionsThemeLabel": {
+        "message": "主题"
+    },
+    "optionsThemeSystem": {
+        "message": "跟随系统"
+    },
+    "optionsThemeLight": {
+        "message": "白天模式"
+    },
+    "optionsThemeDark": {
+        "message": "黑夜模式"
+    },
+    "optionsThemeHint": {
+        "message": "选择白天或黑夜后，插件界面不再跟随系统自动切换。"
+    },
+    "optionsLanguageLabel": {
+        "message": "语言"
+    },
+    "optionsLanguageSystem": {
+        "message": "跟随浏览器"
+    },
+    "optionsLanguageZh": {
+        "message": "简体中文"
+    },
+    "optionsLanguageEn": {
+        "message": "English"
+    },
+    "optionsLanguageHint": {
+        "message": "选择后，插件弹窗、设置页和 GitHub 页面注入面板会使用该语言。"
     },
     "optionsSectionHistory": {
         "message": "📅 浏览历史"

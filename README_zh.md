@@ -26,7 +26,12 @@
 
 ### ⚙️ 配置说明
 
-1. **GitHub Token**: 首次使用需创建 Personal Access Token (需要 `repo` 和 `gist` 权限)。
+1. **GitHub Token**：首次使用需要创建 Personal Access Token，并填入插件设置页。
+   - **只管理公开 Star 仓库**：只需要能访问 GitHub 已登录 API 的 token，用于读取你的公开 Star 列表。
+   - **需要读取私有 Star 仓库**：token 必须有读取私有仓库的权限。使用 classic Personal Access Token 时，选择 `repo` scope。
+   - **开启云同步**：插件会把 `data.json`、`README.md`，以及可选的 `HISTORY.md` 写入同步仓库。如果使用默认私有同步仓库，token 需要能创建和写入私有仓库。使用 classic Personal Access Token 时，选择 `repo` scope。
+   - **Gist**：当前插件代码不需要 `gist` 权限。
+   - 请妥善保管 token。它会保存在 Chrome 扩展本地存储中，仅用于 GitHub API 请求。
 2. **AI 配置 (可选)**:
    - 支持 Google Gemini API (推荐)。
    - 支持 OpenAI 或其他兼容 OpenAI 格式的自定义 API 端点。

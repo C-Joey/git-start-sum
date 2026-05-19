@@ -11,6 +11,26 @@
     "popupBtnSync": {
         "message": "Sync Data"
     },
+    "popupBtnTheme": {
+        "message": "Switch theme"
+    },
+    "popupBtnThemeCurrent": {
+        "message": "Switch theme: currently $THEME$",
+        "placeholders": {
+            "theme": {
+                "content": "$1"
+            }
+        }
+    },
+    "popupThemeSystem": {
+        "message": "Follow system"
+    },
+    "popupThemeLight": {
+        "message": "Light mode"
+    },
+    "popupThemeDark": {
+        "message": "Dark mode"
+    },
     "popupBtnSettings": {
         "message": "Settings"
     },
@@ -27,7 +47,7 @@
         "message": "Get Started"
     },
     "popupSetupHelpPrefix": {
-        "message": "Requires repo + gist permissions · "
+        "message": "Private repos and cloud sync require repo permission · "
     },
     "popupSetupHelpLink": {
         "message": "Create Token →"
@@ -161,6 +181,14 @@
     "msgSaved": {
         "message": "Saved"
     },
+    "msgThemeSwitched": {
+        "message": "Switched to $THEME$",
+        "placeholders": {
+            "theme": {
+                "content": "$1"
+            }
+        }
+    },
     "msgAIConfigWarning": {
         "message": "⚠️ Please configure AI API Key in "
     },
@@ -215,7 +243,7 @@
         "message": "🔍 Verify"
     },
     "optionsTokenHintContent": {
-        "message": "Requires repo + gist permissions."
+        "message": "Private repositories and cloud sync require repo permission."
     },
     "optionsTokenHintLink": {
         "message": "Create Token →"
@@ -300,6 +328,39 @@
     },
     "optionsAIModelHint": {
         "message": "Click verify button to auto-load available models"
+    },
+    "optionsSectionAppearance": {
+        "message": "🎨 Appearance"
+    },
+    "optionsThemeLabel": {
+        "message": "Theme"
+    },
+    "optionsThemeSystem": {
+        "message": "Follow system"
+    },
+    "optionsThemeLight": {
+        "message": "Light mode"
+    },
+    "optionsThemeDark": {
+        "message": "Dark mode"
+    },
+    "optionsThemeHint": {
+        "message": "Light or dark mode keeps the extension on that theme instead of following the system."
+    },
+    "optionsLanguageLabel": {
+        "message": "Language"
+    },
+    "optionsLanguageSystem": {
+        "message": "Follow browser"
+    },
+    "optionsLanguageZh": {
+        "message": "简体中文"
+    },
+    "optionsLanguageEn": {
+        "message": "English"
+    },
+    "optionsLanguageHint": {
+        "message": "Applies to the popup, settings page, and GitHub injected panel."
     },
     "optionsSectionHistory": {
         "message": "📅 Browsing History"

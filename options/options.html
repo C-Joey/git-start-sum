@@ -29,8 +29,8 @@
                             data-i18n-placeholder="optionsTokenPlaceholder" placeholder="ghp_xxxxxxxxxxxx">
                         <button id="btn-check-token" class="btn" data-i18n="optionsBtnCheck">🔍 验证</button>
                     </div>
-                    <p class="form-hint"><span data-i18n="optionsTokenHintContent">需要 repo + gist 权限。</span><a
-                            href="https://github.com/settings/tokens/new?description=GitHub+Stars+Manager&scopes=repo,gist"
+                    <p class="form-hint"><span data-i18n="optionsTokenHintContent">私有仓库和云同步需要 repo 权限。</span><a
+                            href="https://github.com/settings/tokens/new?description=GitHub+Stars+Manager&scopes=repo"
                             target="_blank" data-i18n="optionsTokenHintLink">创建 Token →</a></p>
                 </div>
                 <div class="form-group" style="margin-top:12px;">
@@ -123,6 +123,31 @@
                         </div>
                         <p class="form-hint" id="model-hint" data-i18n="optionsAIModelHint">点击验证按钮后会自动加载可用模型</p>
                     </div>
+                </div>
+            </section>
+
+            <!-- Appearance Settings -->
+            <section class="section card">
+                <h2 class="section-title">
+                    <span data-i18n="optionsSectionAppearance">🎨 外观</span>
+                </h2>
+                <div class="form-group">
+                    <label class="form-label" data-i18n="optionsThemeLabel">主题</label>
+                    <select id="theme" class="input">
+                        <option value="system" data-i18n="optionsThemeSystem">跟随系统</option>
+                        <option value="light" data-i18n="optionsThemeLight">白天模式</option>
+                        <option value="dark" data-i18n="optionsThemeDark">黑夜模式</option>
+                    </select>
+                    <p class="form-hint" data-i18n="optionsThemeHint">选择白天或黑夜后，插件界面不再跟随系统自动切换。</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-i18n="optionsLanguageLabel">语言</label>
+                    <select id="app-language" class="input">
+                        <option value="system" data-i18n="optionsLanguageSystem">跟随浏览器</option>
+                        <option value="zh_CN" data-i18n="optionsLanguageZh">简体中文</option>
+                        <option value="en" data-i18n="optionsLanguageEn">English</option>
+                    </select>
+                    <p class="form-hint" data-i18n="optionsLanguageHint">选择后，插件弹窗、设置页和 GitHub 页面注入面板会使用该语言。</p>
                 </div>
             </section>
 

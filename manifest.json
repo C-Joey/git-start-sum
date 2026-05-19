@@ -47,5 +47,16 @@
       "run_at": "document_idle"
     }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "_locales/en/messages.json",
+        "_locales/zh_CN/messages.json"
+      ],
+      "matches": [
+        "https://github.com/*"
+      ]
+    }
+  ],
   "options_page": "options/options.html"
 }

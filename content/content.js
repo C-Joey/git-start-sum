@@ -5,6 +5,68 @@
     'use strict';
 
     let currentRepo = null;
+    let currentLanguage = null;
+    let contentMessages = null;
+
+    function normalizeLanguage(language) {
+        if (language === 'en' || language === 'zh_CN') return language;
+        return 'system';
+    }
+
+    function resolveLanguage(language) {
+        const normalized = normalizeLanguage(language);
+        if (normalized !== 'system') return normalized;
+
+        const uiLanguage = chrome.i18n.getUILanguage?.() || navigator.language || '';
+        return uiLanguage.toLowerCase().startsWith('zh') ? 'zh_CN' : 'en';
+    }
+
+    async function loadContentMessages(language) {
+        const resolvedLanguage = resolveLanguage(language);
+        if (contentMessages && currentLanguage === resolvedLanguage) return;
+
+        currentLanguage = resolvedLanguage;
+        const response = await fetch(chrome.runtime.getURL(`_locales/${currentLanguage}/messages.json`));
+        if (!response.ok) throw new Error(`Failed to load locale: ${currentLanguage}`);
+        contentMessages = await response.json();
+    }
+
+    function t(key, substitutions = []) {
+        const message = contentMessages?.[key]?.message;
+        if (!message) {
+            return chrome.i18n.getMessage(key, substitutions) || key;
+        }
+
+        const values = Array.isArray(substitutions) ? substitutions : [substitutions];
+        let text = message;
+        values.forEach((value, index) => {
+            text = text.replaceAll(`$${index + 1}`, String(value));
+        });
+        return text;
+    }
+
+    function applyContentTheme(theme) {
+        if (theme === 'light' || theme === 'dark') {
+            document.documentElement.setAttribute('data-gsm-theme', theme);
+            return;
+        }
+        document.documentElement.removeAttribute('data-gsm-theme');
+    }
+
+    function loadContentSettings() {
+        return new Promise(resolve => {
+            chrome.storage.local.get('gsm_settings', async (result) => {
+                const settings = result.gsm_settings || {};
+                applyContentTheme(settings.theme);
+                await loadContentMessages(settings.appLanguage);
+                resolve(settings);
+            });
+        });
+    }
+
+    function isImeComposing(event) {
+        return event.isComposing || event.keyCode === 229 || event.key === 'Process';
+    }
 
     // ===== Detect repo page =====
     function detectRepo() {
@@ -45,9 +107,9 @@
         const noteBtn = document.createElement('li');
         noteBtn.className = 'gsm-injected';
         noteBtn.innerHTML = `
-      <button class="gsm-note-btn btn btn-sm" title="${chrome.i18n.getMessage('contentBtnNoteTitle')}">
+      <button class="gsm-note-btn btn btn-sm" title="${t('contentBtnNoteTitle')}">
         <span class="gsm-icon">📝</span>
-        <span class="gsm-label">${chrome.i18n.getMessage('contentBtnNote')}</span>
+        <span class="gsm-label">${t('contentBtnNote')}</span>
       </button>`;
 
         if (repoActions) {
@@ -81,8 +143,8 @@
             noteWidget.innerHTML = `
         <div class="gsm-widget-header">
           <span class="gsm-icon">📝</span>
-          <span>${chrome.i18n.getMessage('contentWidgetTitle')}</span>
-          <button class="gsm-widget-edit" title="${chrome.i18n.getMessage('contentWidgetEdit')}">✏️</button>
+          <span>${t('contentWidgetTitle')}</span>
+          <button class="gsm-widget-edit" title="${t('contentWidgetEdit')}">✏️</button>
         </div>
         <div class="gsm-widget-body">
           <div class="gsm-widget-note"></div>
@@ -102,11 +164,15 @@
     // ===== Load star data from storage =====
     function loadStarData(repo, btnEl, widgetEl) {
         chrome.runtime.sendMessage({ type: 'GET_STAR_DATA', fullName: repo }, (data) => {
+            if (chrome.runtime.lastError) {
+                console.warn('[GSM] Failed to load star data:', chrome.runtime.lastError.message);
+                return;
+            }
             if (!data) return;
 
             if (btnEl && (data.note || data.aiSummary)) {
                 btnEl.classList.add('gsm-has-note');
-                btnEl.querySelector('.gsm-label').textContent = chrome.i18n.getMessage('contentLabelHasNote');
+                btnEl.querySelector('.gsm-label').textContent = t('contentLabelHasNote');
             }
 
             if (widgetEl) {
@@ -120,7 +186,7 @@
                     noteDiv.innerHTML = `<span class="gsm-ai-badge">🤖</span> ${data.aiSummary}`;
                     noteDiv.classList.add('gsm-has-content');
                 } else {
-                    noteDiv.innerHTML = `<span class="gsm-placeholder">${chrome.i18n.getMessage('contentPlaceholderNote')}</span>`;
+                    noteDiv.innerHTML = `<span class="gsm-placeholder">${t('contentPlaceholderNote')}</span>`;
                 }
 
                 if (data.tags && data.tags.length > 0) {
@@ -146,25 +212,25 @@
         </div>
         <div class="gsm-panel-body">
           <div class="gsm-field">
-            <label>${chrome.i18n.getMessage('contentLabelTags')}</label>
+            <label>${t('contentLabelTags')}</label>
             <div class="gsm-panel-tags"></div>
             <div class="gsm-tag-input-row">
-              <input type="text" class="gsm-input gsm-tag-input" placeholder="${chrome.i18n.getMessage('contentPlaceholderAddTag')}">
-              <button class="gsm-btn gsm-tag-add">${chrome.i18n.getMessage('contentBtnAdd')}</button>
+              <input type="text" class="gsm-input gsm-tag-input" placeholder="${t('contentPlaceholderAddTag')}">
+              <button class="gsm-btn gsm-tag-add">${t('contentBtnAdd')}</button>
             </div>
           </div>
           <div class="gsm-field">
-            <label>${chrome.i18n.getMessage('contentLabelNote')}</label>
-            <textarea class="gsm-input gsm-note-textarea" rows="3" placeholder="${chrome.i18n.getMessage('contentPlaceholderNoteArea')}"></textarea>
+            <label>${t('contentLabelNote')}</label>
+            <textarea class="gsm-input gsm-note-textarea" rows="3" placeholder="${t('contentPlaceholderNoteArea')}"></textarea>
           </div>
           <div class="gsm-field">
-            <label>${chrome.i18n.getMessage('contentLabelAI')}</label>
+            <label>${t('contentLabelAI')}</label>
             <div class="gsm-ai-result"></div>
-            <button class="gsm-btn gsm-ai-generate">${chrome.i18n.getMessage('contentBtnAIGenerate')}</button>
+            <button class="gsm-btn gsm-ai-generate">${t('contentBtnAIGenerate')}</button>
           </div>
         </div>
         <div class="gsm-panel-footer">
-          <button class="gsm-btn gsm-btn-primary gsm-save">${chrome.i18n.getMessage('contentBtnSave')}</button>
+          <button class="gsm-btn gsm-btn-primary gsm-save">${t('contentBtnSave')}</button>
         </div>
       </div>`;
 
@@ -177,6 +243,10 @@
 
         // Load existing data
         chrome.runtime.sendMessage({ type: 'GET_STAR_DATA', fullName: repo }, (data) => {
+            if (chrome.runtime.lastError) {
+                console.warn('[GSM] Failed to load panel data:', chrome.runtime.lastError.message);
+                return;
+            }
             if (data) {
                 currentTags = data.tags || [];
                 currentNote = data.note || '';
@@ -198,7 +268,7 @@
         <span class="gsm-tag">
           ${t}
           <span class="gsm-tag-remove" data-tag="${t}">✕</span>
-        </span>`).join('') || `<span class="gsm-placeholder">${chrome.i18n.getMessage('contentNoTags')}</span>`;
+        </span>`).join('') || `<span class="gsm-placeholder">${t('contentNoTags')}</span>`;
 
             container.querySelectorAll('.gsm-tag-remove').forEach(el => {
                 el.addEventListener('click', () => {
@@ -223,6 +293,7 @@
         });
 
         panel.querySelector('.gsm-tag-input').addEventListener('keydown', (e) => {
+            if (isImeComposing(e)) return;
             if (e.key === 'Enter') panel.querySelector('.gsm-tag-add').click();
         });
 
@@ -230,8 +301,8 @@
             const btn = panel.querySelector('.gsm-ai-generate');
             const result = panel.querySelector('.gsm-ai-result');
             btn.disabled = true;
-            btn.textContent = chrome.i18n.getMessage('contentAIGeneratingBtn');
-            result.textContent = chrome.i18n.getMessage('contentAIGenerating');
+            btn.textContent = t('contentAIGeneratingBtn');
+            result.textContent = t('contentAIGenerating');
 
             try {
                 // Get fresh README content
@@ -247,7 +318,7 @@
                 // Wrap sendMessage in a Promise with timeout
                 const response = await new Promise((resolve, reject) => {
                     const timer = setTimeout(() => {
-                        reject(new Error(chrome.i18n.getMessage('contentAITimeoutFront')));
+                        reject(new Error(t('contentAITimeoutFront')));
                     }, 35000);
 
                     chrome.runtime.sendMessage({
@@ -263,7 +334,7 @@
                     }, (resp) => {
                         clearTimeout(timer);
                         if (chrome.runtime.lastError) {
-                            reject(new Error(chrome.runtime.lastError.message || chrome.i18n.getMessage('contentComError')));
+                            reject(new Error(chrome.runtime.lastError.message || t('contentComError')));
                             return;
                         }
                         resolve(resp);
@@ -271,7 +342,7 @@
                 });
 
                 btn.disabled = false;
-                btn.textContent = chrome.i18n.getMessage('contentBtnAIGenerate');
+                btn.textContent = t('contentBtnAIGenerate');
 
                 if (response?.error) {
                     result.textContent = '❌ ' + response.error;
@@ -303,12 +374,12 @@
                         }
                     }
                 } else {
-                    result.textContent = '❌ ' + chrome.i18n.getMessage('contentAIGenerateFail');
+                    result.textContent = '❌ ' + t('contentAIGenerateFail');
                 }
             } catch (err) {
                 btn.disabled = false;
-                btn.textContent = chrome.i18n.getMessage('contentBtnAIGenerate');
-                result.textContent = '❌ ' + (err.message || chrome.i18n.getMessage('contentAIGenerateFailGeneric'));
+                btn.textContent = t('contentBtnAIGenerate');
+                result.textContent = '❌ ' + (err.message || t('contentAIGenerateFailGeneric'));
             }
         });
 
@@ -323,6 +394,10 @@
                     aiSummary: currentAISummary,
                 },
             }, () => {
+                if (chrome.runtime.lastError) {
+                    console.warn('[GSM] Failed to save star data:', chrome.runtime.lastError.message);
+                    return;
+                }
                 panel.remove();
                 // Refresh injected widgets
                 currentRepo = null;
@@ -354,6 +429,25 @@
     }
 
     // ===== Init =====
-    injectUI();
+    loadContentSettings().then(() => {
+        injectUI();
+    }).catch((err) => {
+        console.warn('[GSM] Failed to load content settings:', err);
+        injectUI();
+    });
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName === 'local' && changes.gsm_settings) {
+            const newSettings = changes.gsm_settings.newValue || {};
+            const oldSettings = changes.gsm_settings.oldValue || {};
+            applyContentTheme(newSettings.theme);
+            if (newSettings.appLanguage !== oldSettings.appLanguage) {
+                loadContentMessages(newSettings.appLanguage).then(() => {
+                    currentRepo = null;
+                    document.querySelectorAll('.gsm-injected').forEach(el => el.remove());
+                    injectUI();
+                }).catch(err => console.warn('[GSM] Failed to reload content locale:', err));
+            }
+        }
+    });
     observeNavigation();
 })();
