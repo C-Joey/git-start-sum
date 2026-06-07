@@ -45,6 +45,39 @@
         return text;
     }
 
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+        })[char]);
+    }
+
+    const ZH_TAG_LABELS = {
+        Frontend: '前端',
+        Backend: '后端',
+        Tool: '工具',
+        Framework: '框架',
+        Automation: '自动化',
+        'Chrome Extension': 'Chrome 插件',
+        Collection: '收藏集',
+    };
+
+    function getLocalizedTagLabel(tag) {
+        if (currentLanguage !== 'zh_CN') return String(tag ?? '');
+        return ZH_TAG_LABELS[tag] || String(tag ?? '');
+    }
+
+    function normalizeTagForStorage(tag, allTags) {
+        const label = String(tag ?? '').trim();
+        if (!label || currentLanguage !== 'zh_CN') return label;
+
+        const existingTag = allTags.find(existing => getLocalizedTagLabel(existing) === label);
+        return existingTag || label;
+    }
+
     function applyContentTheme(theme) {
         if (theme === 'light' || theme === 'dark') {
             document.documentElement.setAttribute('data-gsm-theme', theme);
@@ -190,7 +223,7 @@
                 }
 
                 if (data.tags && data.tags.length > 0) {
-                    tagsDiv.innerHTML = data.tags.map(t => `<span class="gsm-tag">${t}</span>`).join('');
+                    tagsDiv.innerHTML = data.tags.map(tag => `<span class="gsm-tag" title="${escapeHtml(tag)}">${escapeHtml(getLocalizedTagLabel(tag))}</span>`).join('');
                 }
             }
         });
@@ -264,10 +297,10 @@
 
         function renderPanelTags() {
             const container = panel.querySelector('.gsm-panel-tags');
-            container.innerHTML = currentTags.map(t => `
-        <span class="gsm-tag">
-          ${t}
-          <span class="gsm-tag-remove" data-tag="${t}">✕</span>
+            container.innerHTML = currentTags.map(tag => `
+        <span class="gsm-tag" title="${escapeHtml(tag)}">
+          ${escapeHtml(getLocalizedTagLabel(tag))}
+          <span class="gsm-tag-remove" data-tag="${escapeHtml(tag)}">✕</span>
         </span>`).join('') || `<span class="gsm-placeholder">${t('contentNoTags')}</span>`;
 
             container.querySelectorAll('.gsm-tag-remove').forEach(el => {
@@ -330,7 +363,9 @@
                             description: document.querySelector('meta[name="description"]')?.content || ''
                         },
                         readmeContent: readmeContent,
-                        availableTags: allTags
+                        availableTags: currentLanguage === 'zh_CN'
+                            ? allTags.map(getLocalizedTagLabel)
+                            : allTags
                     }, (resp) => {
                         clearTimeout(timer);
                         if (chrome.runtime.lastError) {
@@ -357,7 +392,9 @@
                     // Check if AI suggested tags
                     if (response.tags && response.tags.length > 0) {
                         let newlyAdded = false;
-                        for (const tag of response.tags) {
+                        for (const rawTag of response.tags) {
+                            const tag = normalizeTagForStorage(rawTag, allTags);
+                            if (!tag) continue;
                             if (!currentTags.includes(tag)) {
                                 currentTags.push(tag);
                                 newlyAdded = true;

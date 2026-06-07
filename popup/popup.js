@@ -17,10 +17,119 @@ let activeTagFilter = null;
 let currentEditRepo = null;
 let currentAIController = null; // AbortController for in-flight AI request
 let currentTheme = 'system';
+let currentLanguage = 'en';
+
+const DEFAULT_TAGS = {
+    en: ['Frontend', 'Backend', 'AI', 'Tool', 'Web3', 'Framework'],
+    zh_CN: ['前端', '后端', 'AI', '工具', 'Web3', '框架'],
+};
+const NOTE_AI_PREVIEW_THRESHOLD = 40;
+
+const ZH_TAG_LABELS = {
+    Frontend: '前端',
+    Backend: '后端',
+    Tool: '工具',
+    Framework: '框架',
+    Automation: '自动化',
+    'Chrome Extension': 'Chrome 插件',
+    Collection: '收藏集',
+};
 
 // ===== DOM References =====
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
+
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+    })[char]);
+}
+
+function getCompactTagLabel(tag) {
+    const label = getLocalizedTagLabel(tag);
+    if (label.length <= 12) return label;
+
+    const firstWord = label.split(/[\s/_-]+/).filter(Boolean)[0];
+    if (firstWord && firstWord.length >= 4 && firstWord.length <= 12) {
+        return firstWord;
+    }
+
+    return `${label.slice(0, 10)}...`;
+}
+
+function getLocalizedTagLabel(tag) {
+    if (currentLanguage !== 'zh_CN') return String(tag ?? '');
+    return ZH_TAG_LABELS[tag] || String(tag ?? '');
+}
+
+function normalizeTagForStorage(tag) {
+    const label = String(tag ?? '').trim();
+    if (!label || currentLanguage !== 'zh_CN') return label;
+
+    const existingTag = allTags.find(existing => getLocalizedTagLabel(existing) === label);
+    return existingTag || label;
+}
+
+function renderPreviewLines(data) {
+    const note = (data.note || '').trim();
+    const aiSummary = (data.aiSummary || '').trim();
+    const lines = [];
+
+    if (note) {
+        lines.push(`<div class="star-note-preview">📝 ${escapeHtml(truncateText(note, 60))}</div>`);
+    }
+
+    if (aiSummary && (!note || note.length <= NOTE_AI_PREVIEW_THRESHOLD)) {
+        lines.push(`<div class="star-note-preview star-ai-preview">🤖 ${escapeHtml(truncateText(aiSummary, note ? 48 : 60))}</div>`);
+    }
+
+    return lines.join('');
+}
+
+function showConfirmDialog(message, options = {}) {
+    return new Promise(resolve => {
+        const modal = $('#confirm-modal');
+        const title = $('#confirm-title');
+        const messageEl = $('#confirm-message');
+        const cancelBtn = $('#confirm-cancel');
+        const okBtn = $('#confirm-ok');
+
+        title.textContent = options.title || t('popupConfirmTitle');
+        messageEl.textContent = message;
+        okBtn.textContent = options.okText || t('popupBtnDelete');
+        cancelBtn.textContent = options.cancelText || t('popupBtnCancel');
+        modal.classList.remove('hidden');
+
+        const close = (confirmed) => {
+            modal.classList.add('hidden');
+            okBtn.removeEventListener('click', handleOk);
+            cancelBtn.removeEventListener('click', handleCancel);
+            modal.removeEventListener('click', handleBackdrop);
+            document.removeEventListener('keydown', handleKeydown);
+            resolve(confirmed);
+        };
+
+        const handleOk = () => close(true);
+        const handleCancel = () => close(false);
+        const handleBackdrop = (event) => {
+            if (event.target.classList.contains('modal-backdrop')) close(false);
+        };
+        const handleKeydown = (event) => {
+            if (event.key === 'Escape') close(false);
+            if (event.key === 'Enter') close(true);
+        };
+
+        okBtn.addEventListener('click', handleOk);
+        cancelBtn.addEventListener('click', handleCancel);
+        modal.addEventListener('click', handleBackdrop);
+        document.addEventListener('keydown', handleKeydown);
+        okBtn.focus();
+    });
+}
 
 function isImeComposing(event) {
     return event.isComposing || event.keyCode === 229 || event.key === 'Process';
@@ -86,7 +195,7 @@ function searchTargetMatches(target, query) {
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', async () => {
     const settings = await getSettings();
-    await initI18n(settings.appLanguage);
+    currentLanguage = await initI18n(settings.appLanguage);
     currentTheme = settings.theme || 'system';
     applyTheme(currentTheme);
     localizeHtmlPage();
@@ -134,10 +243,36 @@ function getNextTheme(theme) {
     return 'system';
 }
 
+function getThemeIcon(theme) {
+    if (theme === 'light') {
+        return `
+            <svg width="20" height="20" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="M440-760v-160h80v160h-80Zm266 110-57-57 113-113 57 57-113 113Zm54 210v-80h160v80H760ZM440-40v-160h80v160h-80ZM254-650 141-763l57-57 113 113-57 57Zm508 510L649-253l57-57 113 113-57 57ZM40-440v-80h160v80H40Zm158 300-57-57 113-113 57 57-113 113Zm282-100q-100 0-170-70t-70-170q0-100 70-170t170-70q100 0 170 70t70 170q0 100-70 170t-170 70Z" />
+            </svg>
+        `;
+    }
+
+    if (theme === 'dark') {
+        return `
+            <svg width="20" height="20" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="M484-80q-84 0-157.5-32t-128-86.5Q144-253 112-326.5T80-484q0-146 93-257.5T410-880q-18 99 11 193.5T520-521q71 71 165.5 100T879-410q-26 144-138 237T484-80Z" />
+            </svg>
+        `;
+    }
+
+    return `
+        <svg width="20" height="20" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm240 160v-80h160v80H400Z" />
+        </svg>
+    `;
+}
+
 function updateThemeButton() {
     const btn = $('#btn-theme');
     if (!btn) return;
     btn.title = t('popupBtnThemeCurrent', [getThemeLabel(currentTheme)]);
+    btn.dataset.themeMode = currentTheme;
+    btn.innerHTML = getThemeIcon(currentTheme);
 }
 
 async function handleThemeToggle() {
@@ -198,11 +333,10 @@ function bindEvents() {
         });
     });
 
-    // Search: debounce regular typing, and wait until IME composition ends before filtering.
+    // Search is applied on Enter/blur to avoid Chrome popup IME composition glitches.
     const searchInput = $('#search-input');
     let searchIsComposing = false;
     let pendingSearchQuery = searchInput.value;
-    let searchTimer = null;
 
     function applySearch() {
         const activeTab = document.querySelector('.tab.active').dataset.tab;
@@ -213,35 +347,61 @@ function bindEvents() {
         }
     }
 
-    function scheduleSearch() {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(applySearch, 120);
-    }
+    searchInput.addEventListener('beforeinput', (e) => {
+        if (e.isComposing || e.inputType === 'insertCompositionText') {
+            searchIsComposing = true;
+        }
+    });
 
     searchInput.addEventListener('compositionstart', () => {
+        searchIsComposing = true;
+    });
+
+    searchInput.addEventListener('compositionupdate', () => {
         searchIsComposing = true;
     });
 
     searchInput.addEventListener('compositionend', (e) => {
         searchIsComposing = false;
         pendingSearchQuery = e.target.value;
-        scheduleSearch();
     });
 
     searchInput.addEventListener('input', (e) => {
         pendingSearchQuery = e.target.value;
-        if (!searchIsComposing) {
-            scheduleSearch();
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        if (isImeComposing(e) || searchIsComposing) return;
+        if (e.key === 'Enter') {
+            pendingSearchQuery = searchInput.value;
+            applySearch();
+        } else if (e.key === 'Escape') {
+            searchInput.value = '';
+            pendingSearchQuery = '';
+            applySearch();
         }
     });
 
     searchInput.addEventListener('change', () => {
         if (searchIsComposing) return;
+        pendingSearchQuery = searchInput.value;
+        applySearch();
+    });
+
+    searchInput.addEventListener('blur', () => {
+        if (searchIsComposing) return;
+        pendingSearchQuery = searchInput.value;
         applySearch();
     });
 
     // Sync
     $('#btn-sync').addEventListener('click', handleSync);
+
+    // Open as a regular tab for Linux IME compatibility.
+    $('#btn-open-tab').addEventListener('click', () => {
+        chrome.tabs.create({ url: chrome.runtime.getURL('popup/popup.html') });
+        window.close();
+    });
 
     // Theme
     $('#btn-theme').addEventListener('click', handleThemeToggle);
@@ -299,8 +459,8 @@ function setupAutocomplete(inputId, listId, getExistingTags) {
 
         let matches = availableTags;
         if (query) {
-            matches = availableTags.filter(t => {
-                return searchTargetMatches(buildSearchTarget([t]), query);
+            matches = availableTags.filter(tag => {
+                return searchTargetMatches(buildSearchTarget([tag, getLocalizedTagLabel(tag)]), query);
             });
         }
 
@@ -309,8 +469,8 @@ function setupAutocomplete(inputId, listId, getExistingTags) {
             return;
         }
 
-        list.innerHTML = matches.map((t, i) => `
-            <li class="autocomplete-item ${i === selectedIndex ? 'selected' : ''}" data-tag="${t}">${t}</li>
+        list.innerHTML = matches.map((tag, i) => `
+            <li class="autocomplete-item ${i === selectedIndex ? 'selected' : ''}" data-tag="${escapeHtml(tag)}" title="${escapeHtml(tag)}">${escapeHtml(getLocalizedTagLabel(tag))}</li>
         `).join('');
         list.classList.remove('hidden');
 
@@ -384,7 +544,7 @@ async function loadData() {
 
         // If no tags exist, set some defaults
         if (allTags.length === 0) {
-            allTags = ['Frontend', 'Backend', 'AI', 'Tool', 'Web3', 'Framework'];
+            allTags = DEFAULT_TAGS[currentLanguage] || DEFAULT_TAGS.en;
             await saveTags(allTags);
         }
 
@@ -459,6 +619,7 @@ function renderStars(searchQuery = '') {
                 star.license,
                 star.topics || [],
                 data.tags || [],
+                (data.tags || []).map(getLocalizedTagLabel),
                 data.note,
                 data.aiSummary,
             ]);
@@ -486,7 +647,6 @@ function renderStars(searchQuery = '') {
     list.innerHTML = filtered.map((star, i) => {
         const data = starsData[star.fullName] || {};
         const tags = data.tags || [];
-        const notePreview = data.note || data.aiSummary || '';
 
         return `
       <div class="star-item" data-repo="${star.fullName}" style="animation-delay:${Math.min(i * 30, 300)}ms">
@@ -497,13 +657,13 @@ function renderStars(searchQuery = '') {
             ${star.isArchived ? `<span class="tag tag-orange" style="font-size:9px">${t('msgArchived')}</span>` : ''}
           </div>
           <div class="star-desc">${star.description || ''}</div>
-          ${notePreview ? `<div class="star-note-preview">${data.note ? '📝' : '🤖'} ${truncateText(notePreview, 60)}</div>` : ''}
+          ${renderPreviewLines(data)}
           <div class="star-meta">
             ${star.language ? `<span class="star-lang"><span class="lang-dot" style="background:${getLangColor(star.language)}"></span>${star.language}</span>` : ''}
             <span>⭐ ${formatCount(star.stars)}</span>
             <span>${timeAgo(star.starredAt, t)}</span>
           </div>
-          ${tags.length > 0 ? `<div class="star-tags">${tags.map(t => `<span class="tag ${getTagColor(t)}" style="font-size:10px">${t}</span>`).join('')}</div>` : ''}
+          ${tags.length > 0 ? `<div class="star-tags">${tags.map(tag => `<span class="tag ${getTagColor(tag)}" style="font-size:10px" title="${escapeHtml(tag)}">${escapeHtml(getLocalizedTagLabel(tag))}</span>`).join('')}</div>` : ''}
         </div>
         <div class="star-actions">
           <button class="star-edit-btn" data-repo="${star.fullName}" title="${t('msgEditNoteTags')}">📝</button>
@@ -546,9 +706,18 @@ function renderTagFilterBar() {
         }
     }
 
+    const visibleTags = allTags.filter(tag => (tagCounts[tag] || 0) > 0);
+    if (activeTagFilter && !visibleTags.includes(activeTagFilter)) {
+        activeTagFilter = null;
+    }
+
     bar.innerHTML = `
     <span class="tag tag-filter ${!activeTagFilter ? 'active' : ''}" data-tag="">${t('msgFilterAll')}</span>
-    ${allTags.map(t => `<span class="tag tag-filter ${getTagColor(t)} ${activeTagFilter === t ? 'active' : ''}" data-tag="${t}">${t} (${tagCounts[t] || 0})</span>`).join('')}
+    ${visibleTags.map(tag => {
+        const safeTag = escapeHtml(tag);
+        const safeLabel = escapeHtml(getCompactTagLabel(tag));
+        return `<span class="tag tag-filter ${getTagColor(tag)} ${activeTagFilter === tag ? 'active' : ''}" data-tag="${safeTag}" title="${safeTag}">${safeLabel}<span class="tag-filter-count">${tagCounts[tag]}</span></span>`;
+    }).join('')}
   `;
 
     bar.querySelectorAll('.tag-filter').forEach(el => {
@@ -629,28 +798,29 @@ function renderTagManager() {
 
     list.innerHTML = allTags.map(tag => `
     <div class="tag-item">
-      <span class="tag ${getTagColor(tag)}">${tag}</span>
+      <span class="tag ${getTagColor(tag)}" title="${escapeHtml(tag)}">${escapeHtml(getLocalizedTagLabel(tag))}</span>
       <span class="tag-count">${tagCounts[tag] || 0}</span>
-      <span class="tag-delete" data-tag="${tag}" title="${t('popupBtnDeleteTag')}">✕</span>
+      <span class="tag-delete" data-tag="${escapeHtml(tag)}" title="${t('popupBtnDeleteTag')}">✕</span>
     </div>
   `).join('');
 
     list.querySelectorAll('.tag-delete').forEach(el => {
         el.addEventListener('click', async () => {
-            if (confirm(t('msgConfirmDeleteTag', [el.dataset.tag]))) {
-                await removeTag(el.dataset.tag);
-                allTags = await getTags();
-                starsData = await getStarsData();
-                renderTagManager();
-                renderTagFilterBar();
-            }
+            const confirmed = await showConfirmDialog(t('msgConfirmDeleteTag', [getLocalizedTagLabel(el.dataset.tag)]));
+            if (!confirmed) return;
+
+            await removeTag(el.dataset.tag);
+            allTags = await getTags();
+            starsData = await getStarsData();
+            renderTagManager();
+            renderTagFilterBar();
         });
     });
 }
 
 async function handleAddTag() {
     const input = $('#new-tag-input');
-    const tag = input.value.trim();
+    const tag = normalizeTagForStorage(input.value.trim());
     if (!tag) return;
     await addTag(tag);
     allTags = await getTags();
@@ -692,10 +862,10 @@ function closeModal() {
 
 function renderModalTags(tags) {
     const container = $('#modal-tags');
-    container.innerHTML = tags.map(t => `
-        <span class="tag ${getTagColor(t)}">
-            ${t}
-            <span class="tag-remove" data-tag="${t}">✕</span>
+    container.innerHTML = tags.map(tag => `
+        <span class="tag ${getTagColor(tag)}" title="${escapeHtml(tag)}">
+            ${escapeHtml(getLocalizedTagLabel(tag))}
+            <span class="tag-remove" data-tag="${escapeHtml(tag)}">✕</span>
         </span>
     `).join('') || `<span class="text-secondary text-xs">${t('msgEmptyTags')}</span>`;
 
@@ -711,7 +881,7 @@ function renderModalTags(tags) {
 
 async function handleModalAddTag() {
     const input = $('#modal-tag-input');
-    const tag = input.value.trim();
+    const tag = normalizeTagForStorage(input.value.trim());
     if (!tag || !currentEditRepo) return;
 
     await addTag(tag);
@@ -781,8 +951,11 @@ async function handleAISummary() {
         const [owner, repo] = currentEditRepo.split('/');
         const readmeContent = await getRepoReadme(owner, repo);
 
-        // Pass allTags so AI can try to use existing tags
-        const result = await generateSummary(repoInfo, readmeContent, allTags);
+        // Pass localized labels so AI follows the current UI language.
+        const availableTags = currentLanguage === 'zh_CN'
+            ? allTags.map(getLocalizedTagLabel)
+            : allTags;
+        const result = await generateSummary(repoInfo, readmeContent, availableTags);
 
         // If modal was closed while waiting, abort silently
         if (signal.aborted) return;
@@ -793,7 +966,9 @@ async function handleAISummary() {
         let currentTags = data.tags || [];
         if (result.tags && result.tags.length > 0) {
             let tagsChanged = false;
-            for (const tag of result.tags) {
+            for (const rawTag of result.tags) {
+                const tag = normalizeTagForStorage(rawTag);
+                if (!tag) continue;
                 if (!currentTags.includes(tag)) {
                     currentTags.push(tag);
                     tagsChanged = true;

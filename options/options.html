@@ -12,8 +12,16 @@
 <body>
     <div class="options-container">
         <header class="options-header">
-            <h1>⭐ GitHub Stars Manager</h1>
-            <p class="text-secondary" data-i18n="optionsHeaderDesc">配置你的扩展设置</p>
+            <h1>
+                <img class="options-app-icon" src="../icons/icon48.png" alt="" aria-hidden="true">
+                <span>GitHub Stars Manager</span>
+            </h1>
+            <p class="text-secondary">
+                <span data-i18n="optionsHeaderDesc">配置你的扩展设置</span>
+                <span class="options-header-separator">·</span>
+                <a class="options-project-link" href="https://github.com/C-Joey/git-start-sum" target="_blank"
+                    rel="noopener noreferrer" data-i18n="optionsProjectLink">https://github.com/C-Joey/git-start-sum</a>
+            </p>
         </header>
 
         <main class="options-main">
@@ -53,6 +61,7 @@
                     <div class="input-with-action">
                         <input type="text" id="sync-repo" class="input"
                             data-i18n-placeholder="optionsSyncRepoPlaceholder" placeholder="my-github-stars" readonly>
+                        <button id="btn-open-sync-repo" class="btn btn-sm" data-i18n="optionsBtnOpenRepo">打开</button>
                         <button id="btn-edit-repo" class="btn btn-sm" data-i18n="optionsBtnEdit">✏️ 修改</button>
                     </div>
                     <p class="form-hint" id="sync-repo-hint" data-i18n="optionsSyncRepoHint">将自动创建为私有仓库</p>
@@ -82,9 +91,8 @@
                 <div class="form-group">
                     <label class="form-label" data-i18n="optionsAIProviderLabel">AI 服务商</label>
                     <select id="ai-provider" class="input">
-                        <option value="gemini" data-i18n="optionsAIGemini">Google Gemini（免费）</option>
+                        <option value="gemini" data-i18n="optionsAIGemini">Google Gemini API</option>
                         <option value="openai" data-i18n="optionsAIOpenAI">OpenAI</option>
-                        <option value="custom" data-i18n="optionsAICustom">自定义 (OpenAI 兼容)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -94,20 +102,27 @@
                             placeholder="输入你的 API Key">
                         <button id="btn-check-ai" class="btn" data-i18n="optionsBtnCheck">🔍 验证</button>
                     </div>
-                    <p class="form-hint" id="ai-hint"><span data-i18n="optionsAIGeminiHint">Gemini Key: </span><a
+                    <p class="form-hint" id="ai-hint"><span data-i18n="optionsAIGeminiHint">使用 Google AI Studio API Key，额度以 Google 当前政策为准 · </span><a
                             href="https://aistudio.google.com/apikey" target="_blank"
-                            data-i18n="optionsAIGeminiHintLink">获取免费 Key →</a></p>
+                            data-i18n="optionsAIGeminiHintLink">获取 API Key →</a></p>
                 </div>
                 <div id="ai-status" class="status-badge hidden"></div>
                 <div id="custom-ai-fields" class="hidden">
                     <div class="form-group" style="margin-top:12px;">
-                        <label class="form-label" data-i18n="optionsAICustomEndpointLabel">自定义 API 端点</label>
+                        <label class="form-label" data-i18n="optionsOpenAIBaseUrlLabel">API 地址</label>
                         <input type="text" id="ai-endpoint" class="input"
-                            data-i18n-placeholder="optionsAICustomEndpointPlaceholder"
-                            placeholder="https://api.example.com/v1/chat/completions">
-                        <p class="form-hint" data-i18n="optionsAICustomEndpointHint">输入基地址（如
-                            https://api.example.com）会自动补全为 /v1/chat/completions
+                            data-i18n-placeholder="optionsOpenAIBaseUrlPlaceholder"
+                            placeholder="https://api.openai.com">
+                        <p class="form-hint" id="ai-endpoint-hint" data-i18n="optionsOpenAIBaseUrlHint">
+                            默认使用 OpenAI 官方地址，也可以改成你的中转地址
                         </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="optionsOpenAIApiTypeLabel">接口类型</label>
+                        <select id="ai-api-mode" class="input">
+                            <option value="responses" data-i18n="optionsOpenAIApiTypeResponses">Responses API</option>
+                            <option value="chat" data-i18n="optionsOpenAIApiTypeChat">Chat Completions</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="optionsAIModelLabel">模型名称</label>

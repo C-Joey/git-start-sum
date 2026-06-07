@@ -13,7 +13,7 @@
   <!-- Header -->
   <header class="header">
     <div class="header-left">
-      <span class="header-logo">⭐</span>
+      <img class="header-logo" src="../icons/icon16.png" alt="" aria-hidden="true">
       <h1 class="header-title" data-i18n="popupTitleStarsManager">Stars Manager</h1>
     </div>
     <div class="header-actions">
@@ -22,7 +22,12 @@
           <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
         </svg>
       </button>
-      <button id="btn-theme" class="btn-icon" data-i18n-title="popupBtnTheme" title="切换主题">
+      <button id="btn-open-tab" class="btn-icon" data-i18n-title="popupBtnOpenTab" title="在标签页打开">
+        <svg width="20" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z" />
+        </svg>
+      </button>
+      <button id="btn-theme" class="btn-icon theme-toggle" data-i18n-title="popupBtnTheme" title="切换主题">
         <svg width="20" height="20" viewBox="0 -960 960 960" fill="currentColor">
           <path d="M484-80q-84 0-157.5-32t-128-86.5Q144-253 112-326.5T80-484q0-146 93-257.5T410-880q-18 99 11 193.5T520-521q71 71 165.5 100T879-410q-26 144-138 237T484-80Zm0-80q88 0 163-44t118-121q-86-8-163-43.5T463-464q-60-60-95.5-137T324-764q-77 43-120.5 118.5T160-484q0 135 94.5 229.5T484-160Z" />
         </svg>
@@ -37,7 +42,7 @@
 
   <!-- Setup Screen -->
   <div id="setup-screen" class="setup-screen">
-    <div class="setup-icon">🔑</div>
+    <img class="setup-icon" src="../icons/icon48.png" alt="" aria-hidden="true">
     <h2 class="setup-title" data-i18n="popupSetupTitle">欢迎使用 Stars Manager</h2>
     <p class="setup-desc" data-i18n="popupSetupDesc">首先配置你的 GitHub Token 来开始管理</p>
     <input type="password" id="setup-token" class="input" data-i18n-placeholder="popupSetupTokenPlaceholder" placeholder="粘贴你的 GitHub Personal Access Token">
@@ -155,6 +160,21 @@
       </div>
       <div class="modal-footer">
         <button id="modal-save" class="btn btn-primary" data-i18n="popupModalBtnSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content confirm-content glass animate-fade-in">
+      <div class="modal-header">
+        <h3 id="confirm-title" class="modal-title" data-i18n="popupConfirmTitle">确认操作</h3>
+      </div>
+      <p id="confirm-message" class="confirm-message"></p>
+      <div class="modal-footer confirm-footer">
+        <button id="confirm-cancel" class="btn btn-sm" data-i18n="popupBtnCancel">取消</button>
+        <button id="confirm-ok" class="btn btn-danger btn-sm" data-i18n="popupBtnDelete">删除</button>
       </div>
     </div>
   </div>

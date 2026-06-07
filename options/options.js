@@ -1,12 +1,13 @@
 // ===== GitHub Stars Manager — Options Page =====
 
 import { getSettings, saveSettings, clearHistory, exportAllData } from '../lib/storage.js';
-import { getCurrentUser } from '../lib/github-api.js';
+import { getCurrentUser, preflightGitHubApi } from '../lib/github-api.js';
 import { exportToMarkdown } from '../lib/sync.js';
 import { applyTheme } from '../lib/theme.js';
 import { initI18n, localizeDocument, t } from '../lib/i18n.js';
 
 const $ = (sel) => document.querySelector(sel);
+const OPENAI_DEFAULT_BASE_URL = 'https://api.openai.com';
 
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', async () => {
@@ -30,15 +31,16 @@ function loadSettingsToForm(settings) {
     $('#sync-repo').value = settings.syncRepoName || 'my-github-stars';
     $('#sync-enabled').checked = settings.syncEnabled !== false;
     $('#sync-interval').value = settings.syncInterval || 30;
-    $('#ai-provider').value = settings.aiProvider || 'gemini';
+    $('#ai-provider').value = settings.aiProvider === 'custom' ? 'openai' : (settings.aiProvider || 'gemini');
     $('#ai-key').value = settings.aiApiKey || '';
-    $('#ai-endpoint').value = settings.aiCustomEndpoint || '';
+    $('#ai-api-mode').value = resolveStoredApiMode(settings);
+    $('#ai-endpoint').value = normalizeOpenAIBaseUrl(settings.aiCustomEndpoint || OPENAI_DEFAULT_BASE_URL);
     $('#ai-model').value = settings.aiCustomModel || '';
     $('#record-history').checked = settings.recordHistory !== false;
     $('#theme').value = settings.theme || 'system';
     $('#app-language').value = settings.appLanguage || 'system';
 
-    updateAIFields(settings.aiProvider);
+    updateAIFields($('#ai-provider').value);
 
     // Lock sync repo name if already set
     const repoInput = $('#sync-repo');
@@ -70,6 +72,7 @@ function bindEvents() {
     // Validate buttons
     $('#btn-check-token').addEventListener('click', validateToken);
     $('#btn-check-ai').addEventListener('click', validateAI);
+    $('#btn-open-sync-repo').addEventListener('click', openSyncRepo);
 
     // Auto-complete custom endpoint URL on blur
     $('#ai-endpoint').addEventListener('blur', autoCompleteEndpoint);
@@ -146,7 +149,7 @@ function updateAIFields(provider) {
     const customFields = $('#custom-ai-fields');
     const hint = $('#ai-hint');
 
-    if (provider === 'custom') {
+    if (provider === 'openai') {
         customFields.classList.remove('hidden');
     } else {
         customFields.classList.add('hidden');
@@ -161,34 +164,43 @@ function updateAIFields(provider) {
     }
 }
 
-/**
- * Auto-complete custom endpoint URL
- * e.g. "https://api.example.com" → "https://api.example.com/v1/chat/completions"
- */
 function autoCompleteEndpoint() {
     const input = $('#ai-endpoint');
-    let url = input.value.trim();
-    if (!url) return;
+    input.value = normalizeOpenAIBaseUrl(input.value.trim() || OPENAI_DEFAULT_BASE_URL);
+}
 
-    // Remove trailing slash
-    url = url.replace(/\/+$/, '');
-
-    // If it doesn't end with a path that looks like an API endpoint, auto-complete
-    if (!url.includes('/v1/') && !url.includes('/chat/') && !url.includes('/completions')) {
-        // Check if it looks like a base URL (has protocol + host but no API path)
-        try {
-            const parsed = new URL(url);
-            if (parsed.pathname === '/' || parsed.pathname === '') {
-                url = `${url}/v1/chat/completions`;
-            } else if (parsed.pathname === '/v1' || parsed.pathname === '/v1/') {
-                url = `${parsed.origin}/v1/chat/completions`;
-            }
-        } catch {
-            // Not a valid URL, leave as-is
-        }
+function resolveStoredApiMode(settings) {
+    if (/\/chat\/completions\/?$/i.test(settings.aiCustomEndpoint || '')) {
+        return 'chat';
+    }
+    if (/\/responses\/?$/i.test(settings.aiCustomEndpoint || '')) {
+        return 'responses';
+    }
+    if (settings.aiApiMode === 'chat' || settings.aiApiMode === 'responses') {
+        return settings.aiApiMode;
     }
 
-    input.value = url;
+    return resolveApiModeFromEndpoint(settings.aiCustomEndpoint);
+}
+
+function resolveApiModeFromEndpoint(endpoint) {
+    return /\/responses\/?$/i.test(endpoint || '') ? 'responses' : 'chat';
+}
+
+function getOpenAIApiPath(apiMode) {
+    return apiMode === 'chat' ? '/v1/chat/completions' : '/v1/responses';
+}
+
+function normalizeOpenAIBaseUrl(value) {
+    let url = (value || OPENAI_DEFAULT_BASE_URL).trim().replace(/\/+$/, '');
+    url = url.replace(/\/v1\/chat\/completions\/?$/i, '');
+    url = url.replace(/\/v1\/responses\/?$/i, '');
+    url = url.replace(/\/v1\/?$/i, '');
+    return url || OPENAI_DEFAULT_BASE_URL;
+}
+
+function buildOpenAIEndpoint(baseUrl, apiMode) {
+    return `${normalizeOpenAIBaseUrl(baseUrl)}${getOpenAIApiPath(apiMode)}`;
 }
 
 /**
@@ -209,16 +221,57 @@ async function validateToken() {
     showBadge(statusEl, 'loading', t('optionsValidatingDot'));
 
     try {
-        // Temporarily save to validate
-        await saveSettings({ githubToken: token });
+        // Temporarily save to validate the exact token/proxy values currently in the form.
+        await saveSettings({
+            githubToken: token,
+            githubApiBase: $('#github-api-base').value.trim(),
+        });
+        await preflightGitHubApi();
         const user = await getCurrentUser();
+        await saveSettings({ githubLogin: user.login });
         showBadge(statusEl, 'success', `✓ ${t('optionsConnected', [user.login, user.public_repos.toString()])}`);
     } catch (err) {
         showBadge(statusEl, 'error', `✕ ${t('optionsValidateFailed', [err.message])}`);
     }
 
     btn.disabled = false;
-    btn.textContent = '🔍 ' + t('optionsBtnCheck');
+    btn.textContent = t('optionsBtnCheck');
+}
+
+async function openSyncRepo() {
+    const repoName = $('#sync-repo').value.trim() || 'my-github-stars';
+    const token = $('#github-token').value.trim();
+    const btn = $('#btn-open-sync-repo');
+
+    btn.disabled = true;
+    try {
+        let settings = await getSettings();
+        let login = settings.githubLogin;
+
+        if (!login) {
+            if (!token) {
+                showSaveStatus(t('optionsOpenRepoNeedToken'));
+                return;
+            }
+
+            await saveSettings({
+                githubToken: token,
+                githubApiBase: $('#github-api-base').value.trim(),
+            });
+            const user = await getCurrentUser();
+            login = user.login;
+            await saveSettings({ githubLogin: login });
+            settings = await getSettings();
+        }
+
+        const repoUrl = `https://github.com/${encodeURIComponent(login)}/${encodeURIComponent(repoName)}`;
+        chrome.tabs.create({ url: repoUrl });
+        showSaveStatus(t('optionsOpeningRepo', [`${settings.githubLogin || login}/${repoName}`]));
+    } catch (err) {
+        showSaveStatus(t('optionsOpenRepoFailed', [err.message]));
+    } finally {
+        btn.disabled = false;
+    }
 }
 
 /**
@@ -259,17 +312,11 @@ async function validateAI() {
             }
             showBadge(statusEl, 'success', '✓ ' + t('optionsGeminiKeyValid'));
         } else {
-            // Test OpenAI-compatible API
-            // Auto-complete endpoint FIRST, then read the value
             autoCompleteEndpoint();
+            const apiMode = $('#ai-api-mode').value || 'responses';
+            const endpoint = buildOpenAIEndpoint($('#ai-endpoint').value, apiMode);
 
-            const endpoint = provider === 'custom'
-                ? ($('#ai-endpoint').value.trim() || 'https://api.openai.com/v1/chat/completions')
-                : 'https://api.openai.com/v1/chat/completions';
-
-            const model = provider === 'custom'
-                ? ($('#ai-model').value.trim() || 'gpt-4o-mini')
-                : 'gpt-4o-mini';
+            const model = $('#ai-model').value.trim() || 'gpt-4o-mini';
 
             const res = await fetch(endpoint, {
                 method: 'POST',
@@ -277,18 +324,14 @@ async function validateAI() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${key}`,
                 },
-                body: JSON.stringify({
-                    model,
-                    messages: [{ role: 'user', content: 'Hi, respond with just "OK"' }],
-                    max_tokens: 10,
-                }),
+                body: JSON.stringify(buildOpenAITestBody(apiMode, model)),
             });
 
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error?.message || `HTTP ${res.status}`);
             }
-            showBadge(statusEl, 'success', `✓ ${t('optionsAPIKeyValidProvider', [provider === 'custom' ? t('optionsProviderCustom') : 'OpenAI'])}`);
+            showBadge(statusEl, 'success', `✓ ${t('optionsAPIKeyValidProvider', ['OpenAI'])}`);
 
             // Try to fetch available models to populate the dropdown
             fetchAvailableModels(endpoint, key);
@@ -298,7 +341,7 @@ async function validateAI() {
     }
 
     btn.disabled = false;
-    btn.textContent = '🔍 ' + t('optionsBtnCheck');
+    btn.textContent = t('optionsBtnCheck');
 }
 
 /**
@@ -312,10 +355,24 @@ async function loadModelsManually() {
         return;
     }
     autoCompleteEndpoint();
-    const endpoint = provider === 'custom'
-        ? ($('#ai-endpoint').value.trim() || 'https://api.openai.com/v1/chat/completions')
-        : 'https://api.openai.com/v1/chat/completions';
+    const endpoint = buildOpenAIEndpoint($('#ai-endpoint').value, $('#ai-api-mode').value || 'responses');
     await fetchAvailableModels(endpoint, key);
+}
+
+function buildOpenAITestBody(apiMode, model) {
+    if (apiMode === 'responses') {
+        return {
+            model,
+            input: 'Hi, respond with just "OK"',
+            max_output_tokens: 10,
+        };
+    }
+
+    return {
+        model,
+        messages: [{ role: 'user', content: 'Hi, respond with just "OK"' }],
+        max_tokens: 10,
+    };
 }
 
 /**
@@ -329,7 +386,9 @@ async function fetchAvailableModels(chatEndpoint, key) {
     hint.textContent = '✅ ' + t('optionsLoadingModels');
 
     try {
-        let modelsEndpoint = chatEndpoint.replace(/\/chat\/completions\/?$/, '/models');
+        let modelsEndpoint = chatEndpoint
+            .replace(/\/chat\/completions\/?$/, '/models')
+            .replace(/\/responses\/?$/, '/models');
         if (modelsEndpoint === chatEndpoint) {
             try {
                 const url = new URL(chatEndpoint);
@@ -432,8 +491,9 @@ async function handleSave() {
         syncEnabled: $('#sync-enabled').checked,
         syncInterval: parseInt($('#sync-interval').value) || 30,
         aiProvider: $('#ai-provider').value,
+        aiApiMode: $('#ai-api-mode').value || 'responses',
         aiApiKey: $('#ai-key').value.trim(),
-        aiCustomEndpoint: $('#ai-endpoint').value.trim(),
+        aiCustomEndpoint: buildOpenAIEndpoint($('#ai-endpoint').value, $('#ai-api-mode').value || 'responses'),
         aiCustomModel: $('#ai-model').value.trim(),
         recordHistory: $('#record-history').checked,
         theme: $('#theme').value,

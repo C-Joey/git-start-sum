@@ -3,6 +3,7 @@
   "name": "__MSG_appName__",
   "version": "1.0.0",
   "description": "__MSG_appDesc__",
+  "homepage_url": "https://github.com/C-Joey/git-start-sum",
   "default_locale": "zh_CN",
   "permissions": [
     "storage",

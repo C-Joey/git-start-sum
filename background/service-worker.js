@@ -5,15 +5,20 @@ import { generateSummary } from '../lib/ai-summary.js';
 import { getRepoReadme } from '../lib/github-api.js';
 import { syncToGitHub } from '../lib/sync.js';
 
+function createAutoSyncAlarm() {
+    const result = chrome.alarms.create('auto-sync', { periodInMinutes: 30 });
+    result?.catch?.(err => console.warn('[GSM] Failed to create auto-sync alarm:', err));
+}
+
 // ===== Track GitHub Browsing History =====
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     if (changeInfo.status !== 'complete') return;
     if (!tab.url) return;
 
-    const settings = await getSettings();
-    if (!settings.recordHistory || !settings.githubToken) return;
-
     try {
+        const settings = await getSettings();
+        if (!settings.recordHistory || !settings.githubToken) return;
+
         const url = new URL(tab.url);
         if (url.hostname !== 'github.com') return;
 
@@ -38,21 +43,21 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
             title,
             description,
         });
-    } catch {
-        // Silently ignore errors
+    } catch (err) {
+        console.warn('[GSM] Failed to record browsing history:', err);
     }
 });
 
 // ===== Periodic Sync =====
-chrome.alarms.create('auto-sync', { periodInMinutes: 30 });
+createAutoSyncAlarm();
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (alarm.name !== 'auto-sync') return;
 
-    const settings = await getSettings();
-    if (!settings.syncEnabled || !settings.githubToken) return;
-
     try {
+        const settings = await getSettings();
+        if (!settings.syncEnabled || !settings.githubToken) return;
+
         await syncToGitHub();
         console.log('[GSM] Auto sync completed');
     } catch (err) {
@@ -62,6 +67,8 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
 // ===== Install / Update =====
 chrome.runtime.onInstalled.addListener((details) => {
+    createAutoSyncAlarm();
+
     if (details.reason === 'install') {
         console.log('[GSM] Extension installed');
     } else if (details.reason === 'update') {
@@ -69,35 +76,53 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 });
 
+chrome.runtime.onStartup.addListener(() => {
+    createAutoSyncAlarm();
+});
+
 // ===== Message Handler (for content scripts) =====
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (!message?.type) return false;
+
     if (message.type === 'GET_STAR_DATA') {
-        getStarData(message.fullName).then(data => sendResponse(data));
+        getStarData(message.fullName)
+            .then(data => sendResponse(data))
+            .catch(err => sendResponse({ error: err.message || chrome.i18n.getMessage('contentComError') }));
         return true; // async response
     }
 
     if (message.type === 'SAVE_STAR_DATA') {
-        saveStarData(message.fullName, message.data).then(() => sendResponse({ ok: true }));
+        saveStarData(message.fullName, message.data)
+            .then(() => sendResponse({ ok: true }))
+            .catch(err => sendResponse({ error: err.message || chrome.i18n.getMessage('contentComError') }));
         return true;
     }
 
     if (message.type === 'GENERATE_SUMMARY') {
-        // Wrap in a promise with timeout to ensure sendResponse is always called
-        const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error(chrome.i18n.getMessage('bgAITimeout'))), 30000)
-        );
+        let responded = false;
+        const respondOnce = (response) => {
+            if (responded) return;
+            responded = true;
+            clearTimeout(timeoutId);
+            sendResponse(response);
+        };
+        const timeoutId = setTimeout(() => {
+            respondOnce({ error: chrome.i18n.getMessage('bgAITimeout') });
+        }, 30000);
 
-        const workPromise = (async () => {
-            // Use provided readme if available (from DOM), otherwise fetch it
-            const readme = message.readmeContent || await getRepoReadme(message.owner, message.repo);
-            const result = await generateSummary(message.repoInfo, readme, message.availableTags || []);
-            return result; // returns { summary, tags }
+        (async () => {
+            try {
+                // Use provided readme if available (from DOM), otherwise fetch it
+                const readme = message.readmeContent || await getRepoReadme(message.owner, message.repo);
+                const result = await generateSummary(message.repoInfo, readme, message.availableTags || []);
+                respondOnce(result); // returns { summary, tags }
+            } catch (err) {
+                respondOnce({ error: err.message || chrome.i18n.getMessage('contentAIGenerateFailGeneric') });
+            }
         })();
-
-        Promise.race([workPromise, timeoutPromise])
-            .then(result => sendResponse(result))
-            .catch(err => sendResponse({ error: err.message || chrome.i18n.getMessage('contentAIGenerateFailGeneric') }));
 
         return true;
     }
+
+    return false;
 });
