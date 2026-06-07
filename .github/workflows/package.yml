@@ -1,0 +1,58 @@
+name: Package Extension
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  package:
+    name: Validate and package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate JavaScript syntax
+        run: |
+          find background content lib options popup -name '*.js' -print0 \
+            | xargs -0 -n 1 node --check
+
+      - name: Validate JSON files
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const files = [
+              'manifest.json',
+              '_locales/en/messages.json',
+              '_locales/zh_CN/messages.json',
+          ];
+
+          for (const file of files) {
+              JSON.parse(fs.readFileSync(file, 'utf8'));
+              console.log(`valid JSON: ${file}`);
+          }
+          NODE
+
+      - name: Prepare package
+        run: |
+          VERSION="$(node -p "require('./manifest.json').version")"
+          PACKAGE_NAME="github-stars-manager-v${VERSION}"
+
+          rm -rf dist package
+          mkdir -p dist package
+
+          cp manifest.json package/
+          cp -R _locales background content icons lib options popup styles package/
+
+          (cd package && zip -r "../dist/${PACKAGE_NAME}.zip" .)
+
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-stars-manager-extension
+          path: dist/*.zip
+          if-no-files-found: error
