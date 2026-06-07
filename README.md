@@ -27,18 +27,18 @@ GitHub Stars Manager 是一个原生 Manifest V3 Chrome 扩展，用于把 GitHu
 <table>
   <tr>
     <td width="50%">
-      <img src="docs/assets/popup.svg" alt="插件弹窗" width="100%">
+      <img src="docs/assets/popup.png" alt="插件弹窗" width="100%">
     </td>
     <td width="50%">
-      <img src="docs/assets/options.svg" alt="设置页" width="100%">
+      <img src="docs/assets/repo-modal.png" alt="仓库编辑弹窗" width="100%">
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="docs/assets/github-panel.svg" alt="GitHub 注入面板" width="100%">
+      <img src="docs/assets/options-sync.png" alt="GitHub 与同步设置" width="100%">
     </td>
     <td width="50%">
-      <img src="docs/assets/demo.svg" alt="功能演示流程" width="100%">
+      <img src="docs/assets/options-ai.png" alt="AI 设置" width="100%">
     </td>
   </tr>
 </table>

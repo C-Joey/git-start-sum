@@ -27,18 +27,18 @@ Project URL: <https://github.com/C-Joey/git-start-sum>
 <table>
   <tr>
     <td width="50%">
-      <img src="docs/assets/popup.svg" alt="Popup" width="100%">
+      <img src="docs/assets/popup.png" alt="Popup" width="100%">
     </td>
     <td width="50%">
-      <img src="docs/assets/options.svg" alt="Options" width="100%">
+      <img src="docs/assets/repo-modal.png" alt="Repository edit modal" width="100%">
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="docs/assets/github-panel.svg" alt="GitHub panel" width="100%">
+      <img src="docs/assets/options-sync.png" alt="GitHub and sync settings" width="100%">
     </td>
     <td width="50%">
-      <img src="docs/assets/demo.svg" alt="Demo flow" width="100%">
+      <img src="docs/assets/options-ai.png" alt="AI settings" width="100%">
     </td>
   </tr>
 </table>
