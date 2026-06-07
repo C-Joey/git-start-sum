@@ -63,14 +63,14 @@ GitHub Stars Manager 是一个原生 Manifest V3 Chrome 扩展，用于把 GitHu
 
 ## GitHub Token 配置
 
-首次使用需要配置 GitHub Personal Access Token。推荐使用 classic token，权限模型更简单。
+首次使用需要配置 GitHub Personal Access Token。Token 不是授权给本项目源码仓库 `C-Joey/git-start-sum`，而是让扩展读取你的 GitHub Stars，并写入你自己配置的同步数据仓库。
 
-| 使用场景 | 推荐权限 |
+| Token 类型 | 适用场景 | 权限说明 |
 | --- | --- |
-| 只读取公开 Star 仓库 | 默认 GitHub API 访问即可 |
-| 读取私有 Star / 私有仓库 | `repo` scope |
-| 创建并写入同步仓库 | `repo` scope |
-| Gist | 当前版本不需要 `gist` 权限 |
+| Classic token | 最省事，兼容读取 Stars、创建同步仓库和写入数据 | 勾选 `repo` scope。注意：`repo` 权限范围较大，会覆盖你账号可访问的私有仓库。 |
+| Fine-grained token | 更安全，适合只让扩展写入一个固定的数据仓库 | 先手动创建同步仓库，例如 `my-github-stars`，Repository access 只选择这个仓库，并授予 `Contents: Read and write`。 |
+
+如果只是想快速使用，classic token 的 `repo` scope 最简单；如果更在意最小权限，推荐使用 fine-grained token 并只授权同步数据仓库。当前版本不需要 `gist` 权限。
 
 Token 只保存在 Chrome 扩展本地存储中，用于访问 GitHub API。不要把 Token 提交到仓库，也不要把同步数据仓库设为公开，除非你明确希望公开这些数据。
 

@@ -63,14 +63,14 @@ After updating files, reload the extension from `chrome://extensions/`.
 
 ## GitHub Token
 
-Create a GitHub Personal Access Token and paste it into the options page. A classic token is recommended for simpler permissions.
+Create a GitHub Personal Access Token and paste it into the options page. The token is not for the source repository `C-Joey/git-start-sum`; it is used by the extension to read your GitHub Stars and write to the sync data repository you configure.
 
-| Scenario | Recommended permission |
+| Token type | Use case | Permission notes |
 | --- | --- |
-| Public starred repositories only | Basic authenticated GitHub API access |
-| Private Stars / private repositories | `repo` scope |
-| Create and write sync repository | `repo` scope |
-| Gist | Not required in the current version |
+| Classic token | Easiest setup; works for reading Stars, creating the sync repository, and writing data | Enable the `repo` scope. Note that `repo` is broad and covers private repositories your account can access. |
+| Fine-grained token | Safer setup when the extension should only write to one fixed data repository | Create the sync repository first, for example `my-github-stars`, set Repository access to that repository only, and grant `Contents: Read and write`. |
+
+For quick setup, a classic token with the `repo` scope is the simplest option. For least privilege, use a fine-grained token scoped only to the sync data repository. The current version does not require `gist` permission.
 
 The token is stored in Chrome extension local storage and is only used for GitHub API requests. Do not commit or share it.
 
