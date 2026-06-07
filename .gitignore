@@ -1,0 +1,8 @@
+# Local AI/dev workflow state
+.codex/
+.trellis/
+task.md
+
+# Build artifacts
+dist/
+package/
